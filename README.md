@@ -4,6 +4,16 @@ An interactive map plugin for [Micro.blog](https://micro.blog) that lets you pla
 
 Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad Campos.
 
+## Example uses
+
+- Link to your posts or categories related to areas on the map (cities, states, countries, etc).
+- Keep track of your travel quest progress on a map (use green checkbox icons for objectives you've completed).
+- Link to your photo gallery pages for particular places (cities, national parks, countries, etc).
+- Create a map of your Yelp reviews (you can link to any page from the map, not just Micro.blog ones).
+- Show your photo locations from your morning's photo walk using built-in number pins and lightbox.
+- Create a map of airports you've flown through
+- Use built-in number pins to show your travel destinations by year
+
 ## Features
 
 - **Multiple maps** — Create as many maps as you want, each powered by its own data file.
