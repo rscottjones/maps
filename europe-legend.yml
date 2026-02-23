@@ -1,0 +1,20 @@
+# Legend for the Europe map
+# See README.md for field reference.
+
+- label: "Visited"
+  icon: "circle-check"
+  color: "Green"
+
+- label: "Favorite"
+  icon: "star"
+  color: "Gold"
+
+- label: "Photo spot"
+  icon: "camera"
+  color: "Tomato"
+
+- label: "Wishlist"
+  icon: "pin"
+
+- label: "Temple"
+  icon: "🏯"
