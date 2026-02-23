@@ -1,4 +1,4 @@
-# Microblog Multi-Map
+# Maps for Micro.blog
 
 An interactive map plugin for [Micro.blog](https://micro.blog) that lets you place pins on one or more maps using simple YAML data files. Built on [Leaflet.js](https://leafletjs.com/) and [OpenStreetMap](https://www.openstreetmap.org/).
 
