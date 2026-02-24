@@ -242,6 +242,13 @@ All built-in icons respect the `color` field. For example, a `circle-check` with
 
 The shortcode loads Leaflet's CSS and JavaScript on demand — no changes to your theme's `<head>` or footer are needed. It includes CSS overrides that prevent common theme styles (such as `max-width` or `border-radius` on images) from shifting Leaflet's map tiles and pin positions. This is a [known issue](https://rsjon.es/2026/01/31/fixing-pin-locations-using-microblog/) with some Micro.blog themes, particularly mnml.
 
+## Possible future features
+
+- change base map via shortcode parameter
+- browse all linked photos in a map via lightbox
+- marker clustering for large datasets
+- support font awesome icons
+
 ## Credits
 
 - [Leaflet.js](https://leafletjs.com/) for the mapping library
