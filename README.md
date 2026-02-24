@@ -244,6 +244,7 @@ The shortcode loads Leaflet's CSS and JavaScript on demand — no changes to you
 
 ## Possible future features
 
+- change default icon via shortcode parameter
 - change base map via shortcode parameter
 - browse all linked photos in a map via lightbox
 - marker clustering for large datasets
