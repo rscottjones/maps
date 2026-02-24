@@ -1,0 +1,55 @@
+- name: "Herbert Hoover Presidential Library and Museum"
+  lat: 41.6696
+  lon: -91.3469
+
+- name: "Franklin D. Roosevelt Presidential Library and Museum"
+  lat: 41.7679
+  lon: -73.9330
+
+- name: "Harry S. Truman Presidential Library and Museum"
+  lat: 39.0919
+  lon: -94.4166
+
+- name: "Dwight D. Eisenhower Presidential Library, Museum and Boyhood Home"
+  lat: 38.9170
+  lon: -97.2139
+
+- name: "John F. Kennedy Presidential Library and Museum"
+  lat: 42.3162
+  lon: -71.0353
+
+- name: "Lyndon B. Johnson Presidential Library"
+  lat: 30.2859
+  lon: -97.7294
+
+- name: "Richard Nixon Presidential Library and Museum"
+  lat: 33.8897
+  lon: -117.8196
+
+- name: "Gerald R. Ford Presidential Museum"
+  lat: 42.9634
+  lon: -85.6753
+
+- name: "Jimmy Carter Presidential Library and Museum"
+  lat: 33.7727
+  lon: -84.3562
+
+- name: "Ronald Reagan Presidential Library and Museum"
+  lat: 34.2590
+  lon: -118.8192
+
+- name: "George H. W. Bush Presidential Library and Museum"
+  lat: 30.6100
+  lon: -96.3390
+
+- name: "William J. Clinton Presidential Library and Museum"
+  lat: 34.7465
+  lon: -92.2616
+
+- name: "George W. Bush Presidential Center"
+  lat: 32.8412
+  lon: -96.7792
+
+- name: "Barack Obama Presidential Center (under development)"
+  lat: 41.7898
+  lon: -87.6045

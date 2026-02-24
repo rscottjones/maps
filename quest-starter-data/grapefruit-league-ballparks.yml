@@ -1,0 +1,51 @@
+- name: "BayCare Ballpark - Philadelphia Phillies"
+  lat: 27.9679
+  lon: -82.7570
+
+- name: "Charlotte Sports Park - Tampa Bay Rays"
+  lat: 26.9823
+  lon: -82.1223
+
+- name: "Clover Park - New York Mets"
+  lat: 27.2710
+  lon: -80.3581
+
+- name: "CoolToday Park - Atlanta Braves"
+  lat: 27.0449
+  lon: -82.2359
+
+- name: "Ed Smith Stadium - Baltimore Orioles"
+  lat: 27.3506
+  lon: -82.5143
+
+- name: "FITTEAM Ballpark of the Palm Beaches - Houston Astros/Washington Nationals"
+  lat: 26.7850
+  lon: -80.1010
+
+- name: "George M. Steinbrenner Field - New York Yankees"
+  lat: 27.9803
+  lon: -82.5060
+
+- name: "Hammond Stadium - Minnesota Twins"
+  lat: 26.6407
+  lon: -81.8632
+
+- name: "Joker Marchant Stadium - Detroit Tigers"
+  lat: 28.0650
+  lon: -81.9506
+
+- name: "JetBlue Park - Boston Red Sox"
+  lat: 26.5360
+  lon: -81.7552
+
+- name: "LECOM Park - Pittsburgh Pirates"
+  lat: 27.4986
+  lon: -82.5748
+
+- name: "Roger Dean Chevrolet Stadium - Miami Marlins/St. Louis Cardinals"
+  lat: 26.8905
+  lon: -80.1154
+
+- name: "The Ballpark of the Palm Beaches - Houston Astros/Washington Nationals"
+  lat: 26.7850
+  lon: -80.1010

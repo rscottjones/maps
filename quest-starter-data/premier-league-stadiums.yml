@@ -1,0 +1,79 @@
+- name: "Emirates Stadium - Arsenal"
+  lat: 51.5549
+  lon: -0.1084
+
+- name: "Villa Park - Aston Villa"
+  lat: 52.5092
+  lon: -1.8849
+
+- name: "Vitality Stadium - AFC Bournemouth"
+  lat: 50.7352
+  lon: -1.8382
+
+- name: "Gtech Community Stadium - Brentford"
+  lat: 51.4908
+  lon: -0.2886
+
+- name: "Amex Stadium - Brighton & Hove Albion"
+  lat: 50.8616
+  lon: -0.0837
+
+- name: "Stamford Bridge - Chelsea"
+  lat: 51.4816
+  lon: -0.1910
+
+- name: "Selhurst Park - Crystal Palace"
+  lat: 51.3983
+  lon: -0.0856
+
+- name: "Goodison Park - Everton"
+  lat: 53.4388
+  lon: -2.9663
+
+- name: "Craven Cottage - Fulham"
+  lat: 51.4749
+  lon: -0.2217
+
+- name: "Anfield - Liverpool"
+  lat: 53.4308
+  lon: -2.9608
+
+- name: "Etihad Stadium - Manchester City"
+  lat: 53.4831
+  lon: -2.2004
+
+- name: "Old Trafford - Manchester United"
+  lat: 53.4631
+  lon: -2.2913
+
+- name: "St James' Park - Newcastle United"
+  lat: 54.9756
+  lon: -1.6216
+
+- name: "City Ground - Nottingham Forest"
+  lat: 52.9399
+  lon: -1.1320
+
+- name: "Tottenham Hotspur Stadium - Tottenham Hotspur"
+  lat: 51.6043
+  lon: -0.0665
+
+- name: "London Stadium - West Ham United"
+  lat: 51.5386
+  lon: -0.0166
+
+- name: "Molineux Stadium - Wolverhampton Wanderers"
+  lat: 52.5903
+  lon: -2.1304
+
+- name: "Kenilworth Road - Luton Town"
+  lat: 51.8842
+  lon: -0.4314
+
+- name: "Bramall Lane - Sheffield United"
+  lat: 53.3703
+  lon: -1.4706
+
+- name: "Turf Moor - Burnley"
+  lat: 53.7890
+  lon: -2.2300

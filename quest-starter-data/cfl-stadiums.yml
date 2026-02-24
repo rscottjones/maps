@@ -1,0 +1,35 @@
+- name: "BC Place - BC Lions"
+  lat: 49.2776
+  lon: -123.1119
+
+- name: "McMahon Stadium - Calgary Stampeders"
+  lat: 51.0700
+  lon: -114.1210
+
+- name: "Commonwealth Stadium - Edmonton Elks"
+  lat: 53.5590
+  lon: -113.4766
+
+- name: "Mosaic Stadium - Saskatchewan Roughriders"
+  lat: 50.4480
+  lon: -104.6189
+
+- name: "IG Field - Winnipeg Blue Bombers"
+  lat: 49.8079
+  lon: -97.1431
+
+- name: "Tim Hortons Field - Hamilton Tiger-Cats"
+  lat: 43.2520
+  lon: -79.8307
+
+- name: "BMO Field - Toronto Argonauts"
+  lat: 43.6332
+  lon: -79.4186
+
+- name: "Percival Molson Memorial Stadium - Montreal Alouettes"
+  lat: 45.5100
+  lon: -73.5809
+
+- name: "TD Place Stadium - Ottawa Redblacks"
+  lat: 45.3990
+  lon: -75.6835

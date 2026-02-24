@@ -1,0 +1,63 @@
+- name: "Bryant-Denny Stadium — Alabama Crimson Tide"
+  lat: 33.208973
+  lon: -87.550438
+
+- name: "Donald W. Reynolds Razorback Stadium — Arkansas Razorbacks"
+  lat: 36.068054
+  lon: -94.179291
+
+- name: "Jordan-Hare Stadium — Auburn Tigers"
+  lat: 32.602245
+  lon: -85.489250
+
+- name: "Ben Hill Griffin Stadium — Florida Gators"
+  lat: 29.649921
+  lon: -82.348763
+
+- name: "Sanford Stadium — Georgia Bulldogs"
+  lat: 33.949829
+  lon: -83.373482
+
+- name: "Kroger Field — Kentucky Wildcats"
+  lat: 38.0311
+  lon: -84.5031
+
+- name: "Tiger Stadium — LSU Tigers"
+  lat: 30.4120
+  lon: -91.1831
+
+- name: "Vaught-Hemingway Stadium — Ole Miss Rebels"
+  lat: 34.3660
+  lon: -89.5397
+
+- name: "Davis Wade Stadium — Mississippi State Bulldogs"
+  lat: 33.4579
+  lon: -88.7931
+
+- name: "Faurot Field — Missouri Tigers"
+  lat: 38.9420
+  lon: -92.3271
+
+- name: "Neyland Stadium — Tennessee Volunteers"
+  lat: 35.9540
+  lon: -83.9290
+
+- name: "Kyle Field — Texas A&M Aggies"
+  lat: 30.6100
+  lon: -96.3410
+
+- name: "Darrell K Royal-Texas Memorial Stadium — Texas Longhorns"
+  lat: 30.2825
+  lon: -97.7334
+
+- name: "FirstBank Stadium — Vanderbilt Commodores"
+  lat: 36.1439
+  lon: -86.8090
+
+- name: "Williams-Brice Stadium — South Carolina Gamecocks"
+  lat: 33.9731
+  lon: -81.0193
+
+- name: "Memorial Stadium — Missouri Tigers"
+  lat: 38.9420
+  lon: -92.3271
