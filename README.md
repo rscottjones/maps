@@ -6,8 +6,9 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 
 ## Example uses
 
-- Link to your posts or categories related to areas on the map (cities, states, countries, etc).
+- Link to your posts or categories from a certain area (cities, states, countries, etc) on a map.
 - Keep track of your travel quest progress on a map (use green checkbox icons for objectives you've completed).
+- Display all the places you visited on your latest trip, linked to relevant blog posts or photos.
 - Link to your photo gallery pages for particular places (cities, national parks, countries, etc).
 - Create a map of your Yelp reviews (you can link to any page from the map, not just Micro.blog ones).
 - Show your photo locations from your morning's photo walk using built-in number pins and lightbox.
