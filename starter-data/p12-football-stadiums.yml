@@ -1,0 +1,31 @@
+- name: "Albertsons Stadium — Boise State Broncos"
+  lat: 43.6028
+  lon: -116.2030
+
+- name: "Canvas Stadium — Colorado State Rams"
+  lat: 40.5769
+  lon: -105.0918
+
+- name: "Valley Children's Stadium — Fresno State Bulldogs"
+  lat: 36.8128
+  lon: -119.7460
+
+- name: "Reser Stadium — Oregon State Beavers"
+  lat: 44.5605
+  lon: -123.2817
+
+- name: "Snapdragon Stadium — San Diego State Aztecs"
+  lat: 32.7831
+  lon: -117.1197
+
+- name: "Bobcat Stadium — Texas State Bobcats"
+  lat: 29.8913
+  lon: -97.9259
+
+- name: "Maverik Stadium — Utah State Aggies"
+  lat: 41.7439
+  lon: -111.8130
+
+- name: "Martin Stadium — Washington State Cougars"
+  lat: 46.7319
+  lon: -117.1597
