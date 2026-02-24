@@ -123,11 +123,12 @@
     display: flex;
   }
   .map-lightbox img {
-    max-width: 90vw;
-    max-height: 90vh;
+    max-width: 85vw;
+    max-height: 85vh;
     border-radius: 4px;
     box-shadow: 0 4px 30px rgba(0,0,0,0.5);
     object-fit: contain;
+    cursor: default;
   }
   .map-lightbox-caption {
     position: absolute;
@@ -135,6 +136,35 @@
     left: 0; right: 0;
     text-align: center;
     color: #ddd;
+    font-family: sans-serif;
+    font-size: 14px;
+    pointer-events: none;
+  }
+  .map-lightbox-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.8);
+    font-size: 36px;
+    cursor: pointer;
+    padding: 16px;
+    line-height: 1;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: color 0.15s;
+  }
+  .map-lightbox-arrow:hover {
+    color: #fff;
+  }
+  .map-lightbox-prev { left: 8px; }
+  .map-lightbox-next { right: 8px; }
+  .map-lightbox-counter {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    color: rgba(255,255,255,0.6);
     font-family: sans-serif;
     font-size: 14px;
     pointer-events: none;
@@ -163,18 +193,83 @@
     var overlay = document.createElement('div');
     overlay.id = 'map-lightbox';
     overlay.className = 'map-lightbox';
-    overlay.innerHTML = '<img src="" alt="" /><div class="map-lightbox-caption"></div>';
-    overlay.addEventListener('click', function() {
-      overlay.classList.remove('active');
-    });
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') overlay.classList.remove('active');
-    });
+    overlay.innerHTML = '<button class="map-lightbox-arrow map-lightbox-prev">&#8249;</button>'
+      + '<img src="" alt="" />'
+      + '<button class="map-lightbox-arrow map-lightbox-next">&#8250;</button>'
+      + '<div class="map-lightbox-counter"></div>'
+      + '<div class="map-lightbox-caption"></div>';
     document.body.appendChild(overlay);
-    window.__mapOpenLightbox = function(url, caption) {
-      overlay.querySelector('img').src = url;
-      overlay.querySelector('.map-lightbox-caption').textContent = caption || '';
-      overlay.classList.add('active');
+
+    var img = overlay.querySelector('img');
+    var caption = overlay.querySelector('.map-lightbox-caption');
+    var counter = overlay.querySelector('.map-lightbox-counter');
+    var prevBtn = overlay.querySelector('.map-lightbox-prev');
+    var nextBtn = overlay.querySelector('.map-lightbox-next');
+    var gallery = [];
+    var currentIdx = 0;
+
+    function show(idx) {
+      if (idx < 0 || idx >= gallery.length) return;
+      currentIdx = idx;
+      img.src = gallery[idx].url;
+      caption.textContent = gallery[idx].name || '';
+      var hasMultiple = gallery.length > 1;
+      counter.textContent = hasMultiple ? (idx + 1) + ' / ' + gallery.length : '';
+      prevBtn.style.display = hasMultiple && idx > 0 ? '' : 'none';
+      nextBtn.style.display = hasMultiple && idx < gallery.length - 1 ? '' : 'none';
+    }
+
+    function close() { overlay.classList.remove('active'); }
+
+    /* Close on backdrop click (not on img or arrows) */
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) close();
+    });
+
+    prevBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      show(currentIdx - 1);
+    });
+
+    nextBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      show(currentIdx + 1);
+    });
+
+    img.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+
+    /* Keyboard navigation */
+    document.addEventListener('keydown', function(e) {
+      if (!overlay.classList.contains('active')) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowLeft') show(currentIdx - 1);
+      else if (e.key === 'ArrowRight') show(currentIdx + 1);
+    });
+
+    /* Swipe support */
+    var touchStartX = 0;
+    var touchStartY = 0;
+    overlay.addEventListener('touchstart', function(e) {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+    overlay.addEventListener('touchend', function(e) {
+      var dx = e.changedTouches[0].screenX - touchStartX;
+      var dy = e.changedTouches[0].screenY - touchStartY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+        if (dx < 0) show(currentIdx + 1);
+        else show(currentIdx - 1);
+      }
+    }, { passive: true });
+
+    window.__mapLightbox = {
+      open: function(images, startIdx) {
+        gallery = images;
+        show(startIdx || 0);
+        overlay.classList.add('active');
+      }
     };
   }
 
@@ -439,12 +534,25 @@
 
     ensureLightbox();
 
+    /* Collect all image URLs for gallery browsing */
+    var imageGallery = [];
+    locations.forEach(function(loc) {
+      if (loc.url && isImageUrl(loc.url)) {
+        imageGallery.push({ url: loc.url, name: loc.name });
+      }
+    });
+
     /* Intercept lightbox trigger clicks in popups */
     container.addEventListener('click', function(e) {
       var link = e.target.closest('.map-lightbox-trigger');
       if (link) {
         e.preventDefault();
-        window.__mapOpenLightbox(link.href, link.textContent);
+        var linkUrl = link.getAttribute('href');
+        var idx = 0;
+        for (var i = 0; i < imageGallery.length; i++) {
+          if (imageGallery[i].url === linkUrl) { idx = i; break; }
+        }
+        window.__mapLightbox.open(imageGallery, idx);
       }
     });
 
