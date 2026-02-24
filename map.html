@@ -23,7 +23,7 @@
     height                 — map container height (default: "500px")
     color                  — default pin color (default: "#4682B4" SteelBlue)
     icon                   — default icon shape (default: "pin")
-    basemap                — base map tile style (default: "osm")
+    basemap                — base map tile style (default: "voyager")
     legend                 — name of a legend YAML file in data/ (optional)
 
   Data file fields (name, lat, lon required; url, color, icon, description optional):
@@ -66,7 +66,7 @@
 {{ $height := "500px" }}
 {{ $color := "#4682B4" }}
 {{ $icon := "pin" }}
-{{ $basemap := "osm" }}
+{{ $basemap := "voyager" }}
 {{ $legendSource := "" }}
 {{ if .IsNamedParams }}
   {{ with .Get "height" }}{{ $height = . }}{{ end }}
@@ -563,14 +563,15 @@
     var map = L.map(MAP_ID, { scrollWheelZoom: false });
 
     var BASEMAPS = {
-      osm: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19 },
-      voyager: { url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20 },
-      positron: { url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20 },
-      dark: { url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20 },
-      topo: { url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, \u00a9 <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)', maxZoom: 17 }
+      osm: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19, subdomains: 'abc' },
+      voyager: { url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20, subdomains: 'abcd' },
+      positron: { url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20, subdomains: 'abcd' },
+      dark: { url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20, subdomains: 'abcd' },
+      topo: { url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, \u00a9 <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)', maxZoom: 17, subdomains: 'abc' },
+      satellite: { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://www.esri.com/">Esri</a> \u2014 Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community', maxZoom: 19, subdomains: '' }
     };
-    var bm = BASEMAPS[BASEMAP] || BASEMAPS.osm;
-    L.tileLayer(bm.url, { attribution: bm.attribution, maxZoom: bm.maxZoom, subdomains: 'abcd' }).addTo(map);
+    var bm = BASEMAPS[BASEMAP] || BASEMAPS.voyager;
+    L.tileLayer(bm.url, { attribution: bm.attribution, maxZoom: bm.maxZoom, subdomains: bm.subdomains }).addTo(map);
 
     var bounds = [];
 
