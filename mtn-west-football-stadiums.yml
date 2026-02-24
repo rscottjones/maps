@@ -1,0 +1,47 @@
+- name: "Falcon Stadium — Air Force Falcons"
+  lat: 38.9969
+  lon: -104.8436
+
+- name: "Albertsons Stadium — Boise State Broncos"
+  lat: 43.6028
+  lon: -116.2030
+
+- name: "Canvas Stadium — Colorado State Rams"
+  lat: 40.5769
+  lon: -105.0918
+
+- name: "Valley Children’s Stadium — Fresno State Bulldogs"
+  lat: 36.8128
+  lon: -119.7460
+
+- name: "Clarence T.C. Ching Athletics Complex — Hawaii Rainbow Warriors"
+  lat: 21.2972
+  lon: -157.8171
+
+- name: "Mackay Stadium — Nevada Wolf Pack"
+  lat: 39.5453
+  lon: -119.8176
+
+- name: "University Stadium — New Mexico Lobos"
+  lat: 35.0676
+  lon: -106.6281
+
+- name: "Snapdragon Stadium — San Diego State Aztecs"
+  lat: 32.7831
+  lon: -117.1197
+
+- name: "CEFCU Stadium — San Jose State Spartans"
+  lat: 37.3197
+  lon: -121.8685
+
+- name: "Allegiant Stadium — UNLV Rebels"
+  lat: 36.0908
+  lon: -115.1839
+
+- name: "Maverik Stadium — Utah State Aggies"
+  lat: 41.7439
+  lon: -111.8130
+
+- name: "War Memorial Stadium — Wyoming Cowboys"
+  lat: 41.3119
+  lon: -105.5697

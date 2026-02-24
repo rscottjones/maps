@@ -1,0 +1,103 @@
+- name: "Cahokia Mounds State Historic Site"
+  lat: 38.6556
+  lon: -90.0606
+
+- name: "Chaco Culture"
+  lat: 36.0600
+  lon: -107.9700
+
+- name: "Hopewell Ceremonial Earthworks"
+  lat: 39.3156
+  lon: -82.9820
+
+- name: "Independence Hall"
+  lat: 39.9489
+  lon: -75.1500
+
+- name: "La Fortaleza and San Juan National Historic Site in Puerto Rico"
+  lat: 18.4663
+  lon: -66.1180
+
+- name: "Mesa Verde National Park"
+  lat: 37.2309
+  lon: -108.4618
+
+- name: "Monticello and the University of Virginia in Charlottesville"
+  lat: 38.0089
+  lon: -78.4769
+
+- name: "Monumental Earthworks of Poverty Point"
+  lat: 32.6368
+  lon: -91.4113
+
+- name: "Moravian Church Settlements"
+  lat: 40.6259
+  lon: -75.3700
+
+- name: "San Antonio Missions"
+  lat: 29.3618
+  lon: -98.4790
+
+- name: "Statue of Liberty"
+  lat: 40.6892
+  lon: -74.0445
+
+- name: "Taos Pueblo"
+  lat: 36.4373
+  lon: -105.5456
+
+- name: "The 20th-Century Architecture of Frank Lloyd Wright"
+  lat: 43.0747
+  lon: -89.3842
+
+- name: "Carlsbad Caverns National Park"
+  lat: 32.1479
+  lon: -104.5567
+
+- name: "Everglades National Park"
+  lat: 25.2866
+  lon: -80.8987
+
+- name: "Grand Canyon National Park"
+  lat: 36.1069
+  lon: -112.1129
+
+- name: "Great Smoky Mountains National Park"
+  lat: 35.6118
+  lon: -83.4895
+
+- name: "Hawaii Volcanoes National Park"
+  lat: 19.4194
+  lon: -155.2885
+
+- name: "Kluane / Wrangell-St. Elias / Glacier Bay / Tatshenshini-Alsek"
+  lat: 60.7500
+  lon: -139.0000
+
+- name: "Mammoth Cave National Park"
+  lat: 37.1869
+  lon: -86.1005
+
+- name: "Olympic National Park"
+  lat: 47.8021
+  lon: -123.6044
+
+- name: "Redwood National and State Parks"
+  lat: 41.2132
+  lon: -124.0046
+
+- name: "Waterton Glacier International Peace Park"
+  lat: 49.0000
+  lon: -113.9000
+
+- name: "Yellowstone National Park"
+  lat: 44.4280
+  lon: -110.5885
+
+- name: "Yosemite National Park"
+  lat: 37.8651
+  lon: -119.5383
+
+- name: "Papahānaumokuākea"
+  lat: 25.7000
+  lon: -170.0000

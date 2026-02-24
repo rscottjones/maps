@@ -1,0 +1,123 @@
+- name: "Honda Center - Anaheim Ducks"
+  lat: 33.8078
+  lon: -117.8767
+
+- name: "TD Garden - Boston Bruins"
+  lat: 42.3662
+  lon: -71.0621
+
+- name: "KeyBank Center - Buffalo Sabres"
+  lat: 42.8750
+  lon: -78.8766
+
+- name: "Scotiabank Saddledome - Calgary Flames"
+  lat: 51.0374
+  lon: -114.0519
+
+- name: "Lenovo Center - Carolina Hurricanes"
+  lat: 35.8033
+  lon: -78.7219
+
+- name: "United Center - Chicago Blackhawks"
+  lat: 41.8807
+  lon: -87.6742
+
+- name: "Ball Arena - Colorado Avalanche"
+  lat: 39.7487
+  lon: -105.0077
+
+- name: "Nationwide Arena - Columbus Blue Jackets"
+  lat: 39.9690
+  lon: -83.0061
+
+- name: "American Airlines Center - Dallas Stars"
+  lat: 32.7905
+  lon: -96.8103
+
+- name: "Little Caesars Arena - Detroit Red Wings"
+  lat: 42.3410
+  lon: -83.0550
+
+- name: "Rogers Place - Edmonton Oilers"
+  lat: 53.5461
+  lon: -113.4978
+
+- name: "Amerant Bank Arena - Florida Panthers"
+  lat: 26.1584
+  lon: -80.3256
+
+- name: "Crypto.com Arena - Los Angeles Kings"
+  lat: 34.0430
+  lon: -118.2673
+
+- name: "Xcel Energy Center - Minnesota Wild"
+  lat: 44.9448
+  lon: -93.1010
+
+- name: "Bell Centre - Montreal Canadiens"
+  lat: 45.4960
+  lon: -73.5693
+
+- name: "Bridgestone Arena - Nashville Predators"
+  lat: 36.1591
+  lon: -86.7785
+
+- name: "Prudential Center - New Jersey Devils"
+  lat: 40.7336
+  lon: -74.1710
+
+- name: "UBS Arena - New York Islanders"
+  lat: 40.7118
+  lon: -73.7260
+
+- name: "Madison Square Garden - New York Rangers"
+  lat: 40.7505
+  lon: -73.9934
+
+- name: "Canadian Tire Centre - Ottawa Senators"
+  lat: 45.2969
+  lon: -75.9272
+
+- name: "Wells Fargo Center - Philadelphia Flyers"
+  lat: 39.9012
+  lon: -75.1720
+
+- name: "PPG Paints Arena - Pittsburgh Penguins"
+  lat: 40.4394
+  lon: -79.9894
+
+- name: "SAP Center - San Jose Sharks"
+  lat: 37.3328
+  lon: -121.9012
+
+- name: "Climate Pledge Arena - Seattle Kraken"
+  lat: 47.6221
+  lon: -122.3540
+
+- name: "Enterprise Center - St. Louis Blues"
+  lat: 38.6268
+  lon: -90.2026
+
+- name: "Amalie Arena - Tampa Bay Lightning"
+  lat: 27.9427
+  lon: -82.4518
+
+- name: "Scotiabank Arena - Toronto Maple Leafs"
+  lat: 43.6435
+  lon: -79.3791
+
+- name: "Delta Center - Utah Hockey Club"
+  lat: 40.7683
+  lon: -111.9011
+
+- name: "T-Mobile Arena - Vegas Golden Knights"
+  lat: 36.1029
+  lon: -115.1783
+
+- name: "Capital One Arena - Washington Capitals"
+  lat: 38.8981
+  lon: -77.0209
+
+- name: "Canada Life Centre - Winnipeg Jets"
+  lat: 49.8927
+  lon: -97.1439

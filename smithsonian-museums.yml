@@ -1,0 +1,87 @@
+- name: "African American Museum"
+  lat: 38.8913
+  lon: -77.0327
+
+- name: "African Art Museum"
+  lat: 38.8910
+  lon: -77.0261
+
+- name: "Air and Space Museum"
+  lat: 38.8882
+  lon: -77.0199
+
+- name: "Air and Space Museum Udvar-Hazy Center (Chantilly, Virginia)"
+  lat: 38.9109
+  lon: -77.4443
+
+- name: "American Art Museum"
+  lat: 38.8977
+  lon: -77.0230
+
+- name: "American History Museum"
+  lat: 38.8913
+  lon: -77.0300
+
+- name: "American Indian Museum"
+  lat: 38.8887
+  lon: -77.0169
+
+- name: "American Indian Museum Heye Center (New York, New York)"
+  lat: 40.7033
+  lon: -74.0132
+
+- name: "Anacostia Community Museum"
+  lat: 38.8619
+  lon: -76.9970
+
+- name: "Archives of American Art Fleischman Gallery"
+  lat: 38.8977
+  lon: -77.0230
+
+- name: "Arts and Industries Building"
+  lat: 38.8888
+  lon: -77.0199
+
+- name: "Asian Art - East Building (Sackler Gallery)"
+  lat: 38.8913
+  lon: -77.0261
+
+- name: "Asian Art - West Building (Freer Gallery)"
+  lat: 38.8913
+  lon: -77.0261
+
+- name: "Cooper Hewitt Design (New York, New York)"
+  lat: 40.7843
+  lon: -73.9580
+
+- name: "Hirschhorn"
+  lat: 38.8884
+  lon: -77.0229
+
+- name: "Natural History Museum"
+  lat: 38.8913
+  lon: -77.0261
+
+- name: "National Zoo"
+  lat: 38.9296
+  lon: -77.0498
+
+- name: "Portrait Gallery"
+  lat: 38.8977
+  lon: -77.0230
+
+- name: "Postal Museum"
+  lat: 38.8976
+  lon: -77.0064
+
+- name: "Renwick Gallery"
+  lat: 38.8965
+  lon: -77.0399
+
+- name: "Smithsonian Castle"
+  lat: 38.8887
+  lon: -77.0261
+
+- name: "Smithsonian Gardens"
+  lat: 38.8893
+  lon: -77.0258

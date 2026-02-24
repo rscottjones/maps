@@ -1,0 +1,251 @@
+- name: "Acadia"
+  lat: 44.3386
+  lon: -68.2733
+
+- name: "American Samoa"
+  lat: -14.2583
+  lon: -170.6833
+
+- name: "Arches"
+  lat: 38.7331
+  lon: -109.5925
+
+- name: "Badlands"
+  lat: 43.8554
+  lon: -102.3397
+
+- name: "Big Bend"
+  lat: 29.1275
+  lon: -103.2425
+
+- name: "Biscayne"
+  lat: 25.4824
+  lon: -80.2087
+
+- name: "Black Canyon of the Gunnison"
+  lat: 38.5754
+  lon: -107.7416
+
+- name: "Bryce Canyon"
+  lat: 37.5930
+  lon: -112.1871
+
+- name: "Canyonlands"
+  lat: 38.3269
+  lon: -109.8783
+
+- name: "Capitol Reef"
+  lat: 38.3670
+  lon: -111.2615
+
+- name: "Carlsbad Caverns"
+  lat: 32.1479
+  lon: -104.5567
+
+- name: "Channel Islands"
+  lat: 34.0069
+  lon: -119.7785
+
+- name: "Congaree"
+  lat: 33.7917
+  lon: -80.7821
+
+- name: "Crater Lake"
+  lat: 42.9446
+  lon: -122.1090
+
+- name: "Cuyahoga Valley"
+  lat: 41.2808
+  lon: -81.5678
+
+- name: "Death Valley"
+  lat: 36.5323
+  lon: -116.9325
+
+- name: "Denali"
+  lat: 63.1148
+  lon: -151.1926
+
+- name: "Dry Tortugas"
+  lat: 24.6285
+  lon: -82.8732
+
+- name: "Everglades"
+  lat: 25.2866
+  lon: -80.8987
+
+- name: "Gates of the Arctic"
+  lat: 67.7800
+  lon: -153.3000
+
+- name: "Gateway Arch"
+  lat: 38.6247
+  lon: -90.1848
+
+- name: "Glacier"
+  lat: 48.7596
+  lon: -113.7870
+
+- name: "Glacier Bay"
+  lat: 58.6658
+  lon: -136.9002
+
+- name: "Grand Canyon"
+  lat: 36.1069
+  lon: -112.1129
+
+- name: "Grand Teton"
+  lat: 43.7904
+  lon: -110.6818
+
+- name: "Great Basin"
+  lat: 38.9833
+  lon: -114.3000
+
+- name: "Great Sand Dunes"
+  lat: 37.7916
+  lon: -105.5943
+
+- name: "Great Smoky Mountains"
+  lat: 35.6118
+  lon: -83.4895
+
+- name: "Guadalupe Mountains"
+  lat: 31.9230
+  lon: -104.8854
+
+- name: "Haleakalā"
+  lat: 20.7204
+  lon: -156.1552
+
+- name: "Hawai‘i Volcanoes"
+  lat: 19.4194
+  lon: -155.2885
+
+- name: "Hot Springs"
+  lat: 34.5211
+  lon: -93.0423
+
+- name: "Indiana Dunes"
+  lat: 41.6533
+  lon: -87.0524
+
+- name: "Isle Royale"
+  lat: 48.1000
+  lon: -88.5500
+
+- name: "Joshua Tree"
+  lat: 33.8734
+  lon: -115.9010
+
+- name: "Katmai"
+  lat: 58.6111
+  lon: -155.0000
+
+- name: "Kenai Fjords"
+  lat: 59.9245
+  lon: -149.6500
+
+- name: "Kings Canyon"
+  lat: 36.8879
+  lon: -118.5551
+
+- name: "Kobuk Valley"
+  lat: 67.5500
+  lon: -159.2833
+
+- name: "Lake Clark"
+  lat: 60.4127
+  lon: -154.2000
+
+- name: "Lassen Volcanic"
+  lat: 40.4977
+  lon: -121.4207
+
+- name: "Mammoth Cave"
+  lat: 37.1869
+  lon: -86.1005
+
+- name: "Mesa Verde"
+  lat: 37.2309
+  lon: -108.4618
+
+- name: "Mount Rainier"
+  lat: 46.8523
+  lon: -121.7603
+
+- name: "New River Gorge"
+  lat: 38.0700
+  lon: -81.0800
+
+- name: "North Cascades"
+  lat: 48.7718
+  lon: -121.2985
+
+- name: "Olympic"
+  lat: 47.8021
+  lon: -123.6044
+
+- name: "Petrified Forest"
+  lat: 34.9099
+  lon: -109.8068
+
+- name: "Pinnacles"
+  lat: 36.4906
+  lon: -121.1825
+
+- name: "Redwood"
+  lat: 41.2132
+  lon: -124.0046
+
+- name: "Rocky Mountain"
+  lat: 40.3428
+  lon: -105.6836
+
+- name: "Saguaro"
+  lat: 32.2967
+  lon: -111.1666
+
+- name: "Sequoia"
+  lat: 36.4864
+  lon: -118.5658
+
+- name: "Shenandoah"
+  lat: 38.2928
+  lon: -78.6796
+
+- name: "Theodore Roosevelt"
+  lat: 46.9790
+  lon: -103.5387
+
+- name: "Virgin Islands"
+  lat: 18.3428
+  lon: -64.7419
+
+- name: "Voyageurs"
+  lat: 48.4833
+  lon: -92.8833
+
+- name: "White Sands"
+  lat: 32.7791
+  lon: -106.1717
+
+- name: "Wind Cave"
+  lat: 43.6046
+  lon: -103.4215
+
+- name: "Wrangell-St. Elias"
+  lat: 61.7100
+  lon: -142.9850
+
+- name: "Yellowstone"
+  lat: 44.4280
+  lon: -110.5885
+
+- name: "Yosemite"
+  lat: 37.8651
+  lon: -119.5383
+
+- name: "Zion"
+  lat: 37.2982
+  lon: -113.0263
