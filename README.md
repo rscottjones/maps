@@ -247,7 +247,7 @@ See the Starter Data folder for yaml files to get you started with a number of p
 
 ## Theme Compatibility
 
-The shortcode loads Leaflet's CSS and JavaScript on demand — no changes to your theme's `<head>` or footer are needed. It includes CSS overrides that prevent common theme styles (such as `max-width` or `border-radius` on images) from shifting Leaflet's map tiles and pin positions. This is a [known issue](https://rsjon.es/2026/01/31/fixing-pin-locations-using-microblog/) with some Micro.blog themes, particularly mnml.
+The shortcode loads Leaflet's CSS and JavaScript on demand — no changes to your theme's `<head>` or footer are needed. It includes CSS overrides that prevent common theme styles (such as `max-width` or `border-radius` on images) from shifting Leaflet's map tiles and pin positions. This is a [known issue](https://rsjon.es/2026/01/31/fixing-pin-locations-using-microblog/) with some Micro.blog themes, (like mnml).
 
 ## Possible future features
 
