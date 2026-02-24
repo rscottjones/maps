@@ -23,7 +23,7 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 - **Per-pin colors** — Set a color on any individual pin using CSS color names or hex values.
 - **Custom defaults** — Override the default pin color and icon shape per map via shortcode parameters.
 - **Optional links** — Pins can link to a post or category page. Links open in a new tab.
-- **Built-in lightbox** — If a pin's `url` points to an image file, clicking it opens the image in a full-screen overlay instead of navigating away.
+- **Built-in lightbox** — If a pin's `url` points to an image file, clicking it opens the image in a full-screen overlay. When a map has multiple image pins, arrows and swipe gestures let you browse through all of them.
 - **Descriptions** — Add a short text description to any pin, displayed below the name in the popup.
 - **Legend** — Optionally display a key below the map explaining what each icon and color means.
 - **Self-contained** — Works with any Micro.blog theme (mnml, Tiny, etc.) with no custom CSS, header partials, or microhooks required.
@@ -127,7 +127,7 @@ Each data file is a YAML list stored in your `data/` folder. Only `name`, `lat`,
 | `name` | Yes | The label displayed in the pin's popup. |
 | `lat` | Yes | Latitude coordinate. |
 | `lon` | Yes | Longitude coordinate. |
-| `url` | No | A link destination. The pin's name becomes clickable and opens in a new tab. If the URL points to an image file (`.jpg`, `.jpeg`, `.png`, `.gif`, `.webp`), clicking it opens a lightbox overlay instead. |
+| `url` | No | A link destination. The pin's name becomes clickable and opens in a new tab. If the URL points to an image file (`.jpg`, `.jpeg`, `.png`, `.gif`, `.webp`), clicking it opens a lightbox overlay instead, with arrows to browse all image pins on the map. |
 | `description` | No | A short plain text description displayed below the name in the popup. |
 | `color` | No | Color for this pin. Accepts any CSS color name (`Green`, `Tomato`, `Gold`) or hex value (`#16A34A`). When omitted, the pin uses the map's default color. See [CSS color names](https://www.w3schools.com/colors/colors_names.asp) for a full list. |
 | `icon` | No | Icon shape for this pin. Defaults to `pin`. See [Available Icons](#available-icons). |
@@ -243,7 +243,7 @@ See the Starter Data folder for yaml files to get you started with a number of p
 - **Scroll zoom is disabled** so visitors don't get trapped in the map while scrolling. They can still zoom with the `+`/`-` buttons or by pinching on mobile.
 - **Auto-fit:** The map automatically zooms and pans to fit all your pins.
 - **Mixing icons and colors:** Combine different icons and colors to represent categories — `circle-check` in green for visited places, `star` in gold for favorites, `circle-dot` for your wishlist. Use a legend to explain the key.
-- **Photo maps:** Set each pin's `url` to an image file. The lightbox handles the rest — click a pin name to view the photo, click anywhere or press Escape to close. On Micro.blog, link to the `-m` (medium) version of an image to keep load times fast.
+- **Photo maps:** Set each pin's `url` to an image file. The lightbox handles the rest — click a pin name to view the photo, then use arrows, keyboard, or swipe to browse all photos on the map. Click the backdrop or press Escape to close. On Micro.blog, link to the `-m` (medium) version of an image to keep load times fast.
 
 ## Theme Compatibility
 
@@ -252,7 +252,6 @@ The shortcode loads Leaflet's CSS and JavaScript on demand — no changes to you
 ## Possible future features
 
 - change base map via shortcode parameter
-- browse all linked photos in a map via lightbox
 - marker clustering for large datasets
 - support font awesome icons
 
