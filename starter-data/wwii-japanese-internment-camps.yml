@@ -1,0 +1,39 @@
+- name: "Manzanar"
+  lat: 36.7281
+  lon: -118.1465
+
+- name: "Gila River"
+  lat: 33.1166
+  lon: -111.8824
+
+- name: "Poston"
+  lat: 33.7376
+  lon: -114.4208
+
+- name: "Minidoka"
+  lat: 42.6780
+  lon: -114.2427
+
+- name: "Granada (Amache)"
+  lat: 38.0495
+  lon: -102.3110
+
+- name: "Rohwer"
+  lat: 33.8026
+  lon: -91.2770
+
+- name: "Jerome"
+  lat: 33.9584
+  lon: -91.3380
+
+- name: "Heart Mountain"
+  lat: 44.6767
+  lon: -108.9180
+
+- name: "Topaz"
+  lat: 39.3900
+  lon: -112.8350
+
+- name: "Tule Lake"
+  lat: 41.8870
+  lon: -121.3740
