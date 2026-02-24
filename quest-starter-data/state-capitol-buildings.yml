@@ -1,0 +1,200 @@
+
+- name: "Alabama State Capitol"
+  lat: 32.3777
+  lon: -86.3006
+
+- name: "Alaska State Capitol"
+  lat: 58.3019
+  lon: -134.4197
+
+- name: "Arizona State Capitol"
+  lat: 33.4484
+  lon: -112.0970
+
+- name: "Arkansas State Capitol"
+  lat: 34.7465
+  lon: -92.2896
+
+- name: "California State Capitol"
+  lat: 38.5767
+  lon: -121.4934
+
+- name: "Colorado State Capitol"
+  lat: 39.7392
+  lon: -104.9847
+
+- name: "Connecticut State Capitol"
+  lat: 41.7640
+  lon: -72.6822
+
+- name: "Delaware Legislative Hall"
+  lat: 39.1582
+  lon: -75.5244
+
+- name: "Florida State Capitol"
+  lat: 30.4383
+  lon: -84.2807
+
+- name: "Georgia State Capitol"
+  lat: 33.7490
+  lon: -84.3880
+
+- name: "Hawaii State Capitol"
+  lat: 21.3070
+  lon: -157.8584
+
+- name: "Idaho State Capitol"
+  lat: 43.6178
+  lon: -116.1997
+
+- name: "Illinois State Capitol"
+  lat: 39.7984
+  lon: -89.6549
+
+- name: "Indiana Statehouse"
+  lat: 39.7684
+  lon: -86.1581
+
+- name: "Iowa State Capitol"
+  lat: 41.5912
+  lon: -93.6037
+
+- name: "Kansas State Capitol"
+  lat: 39.0489
+  lon: -95.6775
+
+- name: "Kentucky State Capitol"
+  lat: 38.2009
+  lon: -84.8733
+
+- name: "Louisiana State Capitol"
+  lat: 30.4571
+  lon: -91.1874
+
+- name: "Maine State House"
+  lat: 44.3106
+  lon: -69.7795
+
+- name: "Maryland State House"
+  lat: 38.9784
+  lon: -76.4922
+
+- name: "Massachusetts State House"
+  lat: 42.3588
+  lon: -71.0636
+
+- name: "Michigan State Capitol"
+  lat: 42.7336
+  lon: -84.5555
+
+- name: "Minnesota State Capitol"
+  lat: 44.9551
+  lon: -93.1022
+
+- name: "Mississippi State Capitol"
+  lat: 32.2988
+  lon: -90.1848
+
+- name: "Missouri State Capitol"
+  lat: 38.5767
+  lon: -92.1735
+
+- name: "Montana State Capitol"
+  lat: 46.5857
+  lon: -112.0184
+
+- name: "Nebraska State Capitol"
+  lat: 40.8081
+  lon: -96.6996
+
+- name: "Nevada State Capitol"
+  lat: 39.1638
+  lon: -119.7664
+
+- name: "New Hampshire State House"
+  lat: 43.2069
+  lon: -71.5376
+
+- name: "New Jersey State House"
+  lat: 40.2171
+  lon: -74.7429
+
+- name: "New Mexico State Capitol"
+  lat: 35.6870
+  lon: -105.9378
+
+- name: "New York State Capitol"
+  lat: 42.6526
+  lon: -73.7562
+
+- name: "North Carolina State Capitol"
+  lat: 35.7796
+  lon: -78.6382
+
+- name: "North Dakota State Capitol"
+  lat: 46.8209
+  lon: -100.7833
+
+- name: "Ohio Statehouse"
+  lat: 39.9612
+  lon: -82.9988
+
+- name: "Oklahoma State Capitol"
+  lat: 35.4922
+  lon: -97.5033
+
+- name: "Oregon State Capitol"
+  lat: 44.9385
+  lon: -123.0300
+
+- name: "Pennsylvania State Capitol"
+  lat: 40.2732
+  lon: -76.8867
+
+- name: "Rhode Island State House"
+  lat: 41.8309
+  lon: -71.4149
+
+- name: "South Carolina State House"
+  lat: 34.0007
+  lon: -81.0348
+
+- name: "South Dakota State Capitol"
+  lat: 44.3683
+  lon: -100.3510
+
+- name: "Tennessee State Capitol"
+  lat: 36.1658
+  lon: -86.7844
+
+- name: "Texas State Capitol"
+  lat: 30.2747
+  lon: -97.7404
+
+- name: "Utah State Capitol"
+  lat: 40.7775
+  lon: -111.8882
+
+- name: "Vermont State House"
+  lat: 44.2624
+  lon: -72.5805
+
+- name: "Virginia State Capitol"
+  lat: 37.5389
+  lon: -77.4336
+
+- name: "Washington State Capitol"
+  lat: 47.0379
+  lon: -122.9007
+
+- name: "West Virginia State Capitol"
+  lat: 38.3498
+  lon: -81.6326
+
+- name: "Wisconsin State Capitol"
+  lat: 43.0747
+  lon: -89.3842
+
+- name: "Wyoming State Capitol"
+  lat: 41.1400
+  lon: -104.8202
