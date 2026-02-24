@@ -1,0 +1,63 @@
+- name: "Alumni Stadium — Boston College Eagles"
+  lat: 42.3355
+  lon: -71.1685
+
+- name: "Memorial Stadium — Clemson Tigers"
+  lat: 34.6788
+  lon: -82.8433
+
+- name: "Doak Campbell Stadium — Florida State Seminoles"
+  lat: 30.4381
+  lon: -84.3045
+
+- name: "Bobby Dodd Stadium — Georgia Tech Yellow Jackets"
+  lat: 33.7725
+  lon: -84.3929
+
+- name: "Cardinal Stadium — Louisville Cardinals"
+  lat: 38.2059
+  lon: -85.7586
+
+- name: "Hard Rock Stadium — Miami Hurricanes"
+  lat: 25.9580
+  lon: -80.2389
+
+- name: "Kenan Memorial Stadium — North Carolina Tar Heels"
+  lat: 35.9049
+  lon: -79.0469
+
+- name: "Carter-Finley Stadium — NC State Wolfpack"
+  lat: 35.8008
+  lon: -78.7197
+
+- name: "JMA Wireless Dome — Syracuse Orange"
+  lat: 43.0361
+  lon: -76.1360
+
+- name: "Scott Stadium — Virginia Cavaliers"
+  lat: 38.0316
+  lon: -78.5136
+
+- name: "Lane Stadium — Virginia Tech Hokies"
+  lat: 37.2193
+  lon: -80.4180
+
+- name: "Truist Field — Wake Forest Demon Deacons"
+  lat: 36.1352
+  lon: -80.2798
+
+- name: "Acrisure Stadium — Pitt Panthers"
+  lat: 40.4468
+  lon: -80.0158
+
+- name: "Gerald J. Ford Stadium — SMU Mustangs"
+  lat: 32.8383
+  lon: -96.7836
+
+- name: "California Memorial Stadium — California Golden Bears"
+  lat: 37.8703
+  lon: -122.2500
+
+- name: "Stanford Stadium — Stanford Cardinal"
+  lat: 37.4342
+  lon: -122.1613
