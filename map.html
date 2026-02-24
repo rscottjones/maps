@@ -1,6 +1,6 @@
 {{/*
-  Multi-Map Shortcode for Micro.blog (Hugo)
-  ==========================================
+  Maps for Micro.blog (Hugo Shortcode)
+  =====================================
   Fully self-contained — works with ANY theme (mnml, Tiny, etc.)
   No head partial, footer partial, or microhook needed.
   Leaflet is loaded on demand and only once, even with multiple maps.
@@ -15,12 +15,14 @@
     {{< map source="europe" >}}
     {{< map source="europe" height="700px" >}}
     {{< map source="europe" color="#E11D48" >}}
+    {{< map source="europe" icon="circle-dot" >}}
     {{< map source="europe" legend="europe-legend" >}}
 
   Parameters:
     source / positional 0  — (required) name of the YAML file in data/
     height                 — map container height (default: "500px")
     color                  — default pin color (default: "#4682B4" SteelBlue)
+    icon                   — default icon shape (default: "pin")
     legend                 — name of a legend YAML file in data/ (optional)
 
   Data file fields (name, lat, lon required; url, color, icon, description optional):
@@ -62,10 +64,12 @@
 {{/* ── Optional parameters with defaults ── */}}
 {{ $height := "500px" }}
 {{ $color := "#4682B4" }}
+{{ $icon := "pin" }}
 {{ $legendSource := "" }}
 {{ if .IsNamedParams }}
   {{ with .Get "height" }}{{ $height = . }}{{ end }}
   {{ with .Get "color" }}{{ $color = . }}{{ end }}
+  {{ with .Get "icon" }}{{ $icon = . }}{{ end }}
   {{ with .Get "legend" }}{{ $legendSource = . }}{{ end }}
 {{ end }}
 
@@ -145,6 +149,7 @@
   var MAP_ID = {{ $mapID | jsonify | safeJS }};
   var LEGEND_ID = {{ $legendID | jsonify | safeJS }};
   var DEFAULT_COLOR = {{ $color | jsonify | safeJS }};
+  var DEFAULT_ICON = {{ $icon | jsonify | safeJS }};
 
   /* ── Lightbox ── */
   var IMAGE_EXTS = /\.(jpe?g|png|gif|webp)(\?.*)?$/i;
@@ -408,7 +413,7 @@
         sep.textContent = '\u25C6';
         el.appendChild(sep);
       }
-      var shape = item.icon || 'pin';
+      var shape = item.icon || DEFAULT_ICON;
       var color = item.color || DEFAULT_COLOR;
       var entry = document.createElement('span');
       entry.style.cssText = 'display:inline-flex;align-items:center;gap:6px;white-space:nowrap;';
@@ -454,7 +459,7 @@
 
     locations.forEach(function(loc) {
       var pinColor = loc.color || DEFAULT_COLOR;
-      var shape = loc.icon || 'pin';
+      var shape = loc.icon || DEFAULT_ICON;
       var icon = createIcon(shape, pinColor);
       var marker = L.marker([loc.lat, loc.lon], { icon: icon }).addTo(map);
       var nameHTML;
