@@ -1,0 +1,159 @@
+- name: "Aulavik National Park"
+  lat: 73.7000
+  lon: -119.0000
+
+- name: "Auyuittuq National Park"
+  lat: 66.3000
+  lon: -65.7500
+
+- name: "Banff National Park"
+  lat: 51.4968
+  lon: -115.9281
+
+- name: "Bruce Peninsula National Park"
+  lat: 45.2300
+  lon: -81.5230
+
+- name: "Cape Breton Highlands National Park"
+  lat: 46.8000
+  lon: -60.8000
+
+- name: "Elk Island National Park"
+  lat: 53.5930
+  lon: -112.8700
+
+- name: "Forillon National Park"
+  lat: 48.9000
+  lon: -64.3500
+
+- name: "Fundy National Park"
+  lat: 45.6000
+  lon: -64.9500
+
+- name: "Georgian Bay Islands National Park"
+  lat: 44.8800
+  lon: -79.8700
+
+- name: "Glacier National Park"
+  lat: 51.3000
+  lon: -117.5000
+
+- name: "Grasslands National Park"
+  lat: 49.2000
+  lon: -107.9000
+
+- name: "Gros Morne National Park"
+  lat: 49.6500
+  lon: -57.7500
+
+- name: "Gwaii Haanas National Park Reserve"
+  lat: 52.4000
+  lon: -131.3000
+
+- name: "Ivvavik National Park"
+  lat: 69.4000
+  lon: -138.9000
+
+- name: "Jasper National Park"
+  lat: 52.8737
+  lon: -118.0814
+
+- name: "Kejimkujik National Park"
+  lat: 44.3800
+  lon: -65.2200
+
+- name: "Kluane National Park and Reserve"
+  lat: 60.7500
+  lon: -139.5000
+
+- name: "Kouchibouguac National Park"
+  lat: 46.8000
+  lon: -64.9000
+
+- name: "La Mauricie National Park"
+  lat: 46.8000
+  lon: -72.9000
+
+- name: "Mingan Archipelago National Park Reserve"
+  lat: 50.2500
+  lon: -63.6000
+
+- name: "Mount Revelstoke National Park"
+  lat: 51.0000
+  lon: -118.2000
+
+- name: "Nahanni National Park Reserve"
+  lat: 61.5500
+  lon: -125.6500
+
+- name: "Pacific Rim National Park Reserve"
+  lat: 49.0000
+  lon: -125.7000
+
+- name: "Point Pelee National Park"
+  lat: 41.9500
+  lon: -82.5167
+
+- name: "Prince Albert National Park"
+  lat: 53.9000
+  lon: -106.0000
+
+- name: "Prince Edward Island National Park"
+  lat: 46.5000
+  lon: -63.0000
+
+- name: "Pukaskwa National Park"
+  lat: 48.6000
+  lon: -86.3000
+
+- name: "Quttinirpaaq National Park"
+  lat: 82.5000
+  lon: -62.3500
+
+- name: "Riding Mountain National Park"
+  lat: 50.6500
+  lon: -99.9500
+
+- name: "Sirmilik National Park"
+  lat: 72.7000
+  lon: -80.0000
+
+- name: "Terra Nova National Park"
+  lat: 48.5500
+  lon: -53.9667
+
+- name: "Thousand Islands National Park"
+  lat: 44.3333
+  lon: -75.9167
+
+- name: "Torngat Mountains National Park"
+  lat: 59.5000
+  lon: -63.5000
+
+- name: "Tuktut Nogait National Park"
+  lat: 69.0000
+  lon: -122.0000
+
+- name: "Ukkusiksalik National Park"
+  lat: 65.6000
+  lon: -88.9000
+
+- name: "Vuntut National Park"
+  lat: 68.3500
+  lon: -139.0000
+
+- name: "Wapusk National Park"
+  lat: 58.7000
+  lon: -93.8000
+
+- name: "Waterton Lakes National Park"
+  lat: 49.0500
+  lon: -113.9000
+
+- name: "Wood Buffalo National Park"
+  lat: 59.4000
+  lon: -112.2000
+
+- name: "Yoho National Park"
+  lat: 51.5000
+  lon: -116.5000

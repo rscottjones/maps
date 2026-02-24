@@ -1,0 +1,83 @@
+- name: "Australian Convict Sites"
+  lat: -33.8568
+  lon: 151.2153
+
+- name: "Budj Bim Cultural Landscape"
+  lat: -38.0667
+  lon: 141.9333
+
+- name: "Murujuga Cultural Landscape"
+  lat: -20.6000
+  lon: 116.8000
+
+- name: "Royal Exhibition Building and Carlton Gardens"
+  lat: -37.8047
+  lon: 144.9717
+
+- name: "Sydney Opera House"
+  lat: -33.8568
+  lon: 151.2153
+
+- name: "Australian Fossil Mammal Sites (Riversleigh / Naracoorte)"
+  lat: -18.2500
+  lon: 138.0333
+
+- name: "Gondwana Rainforests of Australia"
+  lat: -28.4000
+  lon: 153.0500
+
+- name: "Great Barrier Reef"
+  lat: -18.2871
+  lon: 147.6992
+
+- name: "Greater Blue Mountains Area"
+  lat: -33.7000
+  lon: 150.3000
+
+- name: "Heard and McDonald Islands"
+  lat: -53.1000
+  lon: 73.5000
+
+- name: "K’gari"
+  lat: -25.2500
+  lon: 153.1667
+
+- name: "Lord Howe Island Group"
+  lat: -31.5500
+  lon: 159.0833
+
+- name: "Macquarie Island"
+  lat: -54.5000
+  lon: 158.9500
+
+- name: "Ningaloo Coast"
+  lat: -22.0000
+  lon: 113.7700
+
+- name: "Purnululu National Park"
+  lat: -17.4833
+  lon: 128.3833
+
+- name: "Shark Bay, Western Australia"
+  lat: -25.8333
+  lon: 113.5000
+
+- name: "Wet Tropics of Queensland"
+  lat: -16.8333
+  lon: 145.6667
+
+- name: "Kakadu National Park"
+  lat: -12.7200
+  lon: 132.5300
+
+- name: "Tasmanian Wilderness"
+  lat: -42.0000
+  lon: 146.5000
+
+- name: "Uluru-Kata Tjuta National Park"
+  lat: -25.3444
+  lon: 131.0369
+
+- name: "Willandra Lakes Region"
+  lat: -34.0000
+  lon: 143.0000
