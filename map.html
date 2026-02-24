@@ -23,6 +23,7 @@
     height                 — map container height (default: "500px")
     color                  — default pin color (default: "#4682B4" SteelBlue)
     icon                   — default icon shape (default: "pin")
+    basemap                — base map tile style (default: "osm")
     legend                 — name of a legend YAML file in data/ (optional)
 
   Data file fields (name, lat, lon required; url, color, icon, description optional):
@@ -65,11 +66,13 @@
 {{ $height := "500px" }}
 {{ $color := "#4682B4" }}
 {{ $icon := "pin" }}
+{{ $basemap := "osm" }}
 {{ $legendSource := "" }}
 {{ if .IsNamedParams }}
   {{ with .Get "height" }}{{ $height = . }}{{ end }}
   {{ with .Get "color" }}{{ $color = . }}{{ end }}
   {{ with .Get "icon" }}{{ $icon = . }}{{ end }}
+  {{ with .Get "basemap" }}{{ $basemap = . }}{{ end }}
   {{ with .Get "legend" }}{{ $legendSource = . }}{{ end }}
 {{ end }}
 
@@ -180,6 +183,7 @@
   var LEGEND_ID = {{ $legendID | jsonify | safeJS }};
   var DEFAULT_COLOR = {{ $color | jsonify | safeJS }};
   var DEFAULT_ICON = {{ $icon | jsonify | safeJS }};
+  var BASEMAP = {{ $basemap | jsonify | safeJS }};
 
   /* ── Lightbox ── */
   var IMAGE_EXTS = /\.(jpe?g|png|gif|webp)(\?.*)?$/i;
@@ -558,10 +562,15 @@
 
     var map = L.map(MAP_ID, { scrollWheelZoom: false });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19
-    }).addTo(map);
+    var BASEMAPS = {
+      osm: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19 },
+      voyager: { url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20 },
+      positron: { url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20 },
+      dark: { url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20 },
+      topo: { url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, \u00a9 <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)', maxZoom: 17 }
+    };
+    var bm = BASEMAPS[BASEMAP] || BASEMAPS.osm;
+    L.tileLayer(bm.url, { attribution: bm.attribution, maxZoom: bm.maxZoom, subdomains: 'abcd' }).addTo(map);
 
     var bounds = [];
 
