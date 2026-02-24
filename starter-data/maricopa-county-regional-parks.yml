@@ -1,0 +1,47 @@
+- name: "Buckeye Hills Regional Park"
+  lat: 33.2844
+  lon: -112.6460
+  
+- name: "Estrella Mountain Regional Park"
+  lat: 33.3315
+  lon: -112.3515
+  
+- name: "San Tan Mountain Regional Park"
+  lat: 33.1680
+  lon: -111.6354
+
+- name: "Vulture Mountains Recreation Area"
+  lat: 33.8850
+  lon: -112.7946
+
+- name: "White Tank Mountain Regional Park"
+  lat: 33.6025
+  lon: -112.5039
+  
+- name: "Adobe Dam Regional Park"
+  lat: 33.6898
+  lon: -112.1507
+
+- name: "Cave Creek Regional Park"
+  lat: 33.8228
+  lon: -112.0172
+  
+- name: "Hassayampa River Preserve"
+  lat: 33.9330
+  lon: -112.6930
+
+- name: "Lake Pleasant Regional Park"
+  lat: 33.9009
+  lon: -112.2693
+
+- name: "McDowell Mountain Regional Park"
+  lat: 33.6674
+  lon: -111.6980
+
+- name: "Spur Cross Ranch Conservation Area"
+  lat: 33.8873
+  lon: -111.9515
+
+- name: "Usery Mountain Regional Park"
+  lat: 33.4659
+  lon: -111.6179
