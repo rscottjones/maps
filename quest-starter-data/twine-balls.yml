@@ -1,0 +1,23 @@
+- name: "Cawker City, Kansas"
+  lat: 39.50924707893837
+  lon: -98.43370527326894
+  description: ""
+  icon: "🧶"
+
+- name: "Darwin, Minnesota"
+  lat: 45.09633363501648
+  lon: -94.41019607574249
+  description: ""
+  icon: "🧶"
+
+- name: "Branson, Missouri"
+  lat: 36.6375660184214
+  lon: -93.28333814298439
+  description: ""
+  icon: "🧶"
+
+- name: "Lake Nebagamon, Wisconsin"
+  lat: 46.42591195356919
+  lon: -91.6684212963407
+  description: ""
+  icon: "🧶"
