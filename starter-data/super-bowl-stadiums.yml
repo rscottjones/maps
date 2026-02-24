@@ -1,0 +1,100 @@
+# Probably best to double check this list against the wikipedia article.
+- name: "Los Angeles Memorial Coliseum - Los Angeles, CA"
+  lat: 34.0141
+  lon: -118.2879
+
+- name: "Orange Bowl - Miami, FL"
+  lat: 25.7169
+  lon: -80.2773
+
+- name: "Tulane Stadium - New Orleans, LA"
+  lat: 29.9760
+  lon: -90.1206
+
+- name: "Rice Stadium - Houston, TX"
+  lat: 29.7161
+  lon: -95.4015
+
+- name: "Rose Bowl - Pasadena, CA"
+  lat: 34.1613
+  lon: -118.1676
+
+- name: "Pontiac Silverdome - Pontiac, MI"
+  lat: 42.6486
+  lon: -83.2911
+
+- name: "Hubert H. Humphrey Metrodome - Minneapolis, MN"
+  lat: 44.9733
+  lon: -93.2575
+
+- name: "Tampa Stadium - Tampa, FL"
+  lat: 27.9759
+  lon: -82.5037
+
+- name: "Qualcomm Stadium - San Diego, CA"
+  lat: 32.7837
+  lon: -117.1190
+
+- name: "Caesars Superdome - New Orleans, LA"
+  lat: 29.9514
+  lon: -90.0820
+
+- name: "Sun Devil Stadium - Tempe, AZ"
+  lat: 33.4255
+  lon: -111.9400
+
+- name: "Hard Rock Stadium - Miami Gardens, FL"
+  lat: 25.9579
+  lon: -80.2393
+
+- name: "Raymond James Stadium - Tampa, FL"
+  lat: 27.9759
+  lon: -82.5037
+
+- name: "Alltel Stadium - Jacksonville, FL"
+  lat: 30.3249
+  lon: -81.6375
+
+- name: "NRG Stadium - Houston, TX"
+  lat: 29.6847
+  lon: -95.4107
+
+- name: "Ford Field - Detroit, MI"
+  lat: 42.3401
+  lon: -83.0463
+
+- name: "MetLife Stadium - East Rutherford, NJ"
+  lat: 40.8135
+  lon: -74.0744
+
+- name: "Lucas Oil Stadium - Indianapolis, IN"
+  lat: 39.7601
+  lon: -86.1639
+
+- name: "AT&T Stadium - Arlington, TX"
+  lat: 32.7478
+  lon: -97.0945
+
+- name: "State Farm Stadium - Glendale, AZ"
+  lat: 33.5273
+  lon: -112.2633
+
+- name: "U.S. Bank Stadium - Minneapolis, MN"
+  lat: 44.9740
+  lon: -93.2581
+
+- name: "Levi’s Stadium - Santa Clara, CA"
+  lat: 37.4039
+  lon: -121.9708
+
+- name: "SoFi Stadium - Inglewood, CA"
+  lat: 33.9536
+  lon: -118.3396
+
+- name: "Allegiant Stadium - Paradise, NV"
+  lat: 36.0908
+  lon: -115.1839
+
+- name: "Mercedes-Benz Stadium - Atlanta, GA"
+  lat: 33.7555
+  lon: -84.4019
