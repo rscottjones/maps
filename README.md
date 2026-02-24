@@ -85,7 +85,7 @@ To customize a map's appearance, switch to named parameters:
 | `height` | `500px` | Height of the map container. Any valid CSS value works. |
 | `color` | `#4682B4` (SteelBlue) | Default pin color for pins that don't specify their own. Accepts CSS color names or hex values. |
 | `icon` | `pin` | Default icon shape for pins that don't specify their own. Accepts any value from [Available Icons](#available-icons). |
-| `basemap` | `osm` | Base map tile style. Options: `osm` (OpenStreetMap), `voyager` (CARTO Voyager), `positron` (CARTO Positron), `dark` (CARTO Dark Matter), `topo` (OpenTopoMap). See [Base Maps](#base-maps). |
+| `basemap` | `voyager` | Base map tile style. Options: `osm`, `voyager`, `positron`, `dark`, `topo`, `satellite`. See [Base Maps](#base-maps). |
 | `legend` | *(none)* | Name of a legend YAML file in `data/` (without `.yml`). When provided, a key is displayed below the map. |
 
 ## Data File Format
@@ -237,7 +237,7 @@ All built-in icons respect the `color` field. For example, a `circle-check` with
 
 ## Base Maps
 
-By default, maps use the standard OpenStreetMap tile layer. You can switch to a different style using the `basemap` parameter:
+By default, maps use CARTO Voyager tiles. You can switch to a different style using the `basemap` parameter:
 
 ```
 {{< map source="europe" basemap="positron" >}}
@@ -245,13 +245,14 @@ By default, maps use the standard OpenStreetMap tile layer. You can switch to a 
 
 | Value | Description |
 |---|---|
-| `osm` | Standard OpenStreetMap tiles *(default)* |
-| `voyager` | CARTO Voyager — clean, colorful street map with a modern feel |
+| `osm` | Standard OpenStreetMap tiles |
+| `voyager` | CARTO Voyager — clean, colorful street map with a modern feel *(default)* |
 | `positron` | CARTO Positron — light gray, minimal. Great for making pins stand out |
 | `dark` | CARTO Dark Matter — dark gray. Striking with colorful pins |
 | `topo` | OpenTopoMap — topographic map with contour lines and elevation shading |
+| `satellite` | Esri World Imagery — satellite photography |
 
-All options are free, require no API key, and support worldwide coverage. The CARTO tiles support retina displays automatically.
+All options are free and require no API key. The Esri satellite tiles use a legacy service that may require registration in the future; see [Esri's terms](https://wiki.openstreetmap.org/wiki/Esri) for details.
 
 ## Starter Data
 
