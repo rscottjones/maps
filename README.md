@@ -6,7 +6,7 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 
 ## Example uses
 
-- You want a map that organizes your travel posts by country, so you add a pin for each country that links to the category archives page for each.
+- You want a map that organizes your travel posts by country, so you add pins that link to the category archives page for each.
 - You post about your day’s hike and want to share the hike photos on a map using the built-in lightbox gallery and satellite map base.
 - Keep track of your progress in your quest goal to visit each of the National Parks, using different pins to show which ones you’ve completed and which ones you still have remaining, along wiht a short summary of your trip in the description field.
 - You create a map of all the places you visited on your last trip, with links to each relevant blog post.
