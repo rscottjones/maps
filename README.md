@@ -15,7 +15,7 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 - Create a map of places you’ve reviewed on Yelp with links directly to each review on Yelp’s website.
 - Create a map of your summer trips using numbered pins to show which year you were there.
 - You want to create a ranking of your favorite coffeeshops in your area, so you use the numbered pins to rank them on a map. Each pin links to a section further down the page where you explain why that shop earned its ranking.
-- You've created a small walking tour of your neighborhood, using numbered pins for the order in which people whould folllow it.
+- You've created a small walking tour of your neighborhood, using numbered pins for the order in which people should follow it.
 
 ## Features
 
