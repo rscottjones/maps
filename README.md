@@ -274,8 +274,11 @@ The shortcode loads Leaflet's CSS and JavaScript on demand — no changes to you
 
 ## Possible future features
 
+- add "rating" markers
 - marker clustering for large datasets
 - support font awesome icons
+- ability to toggle map markers on/off depending on status
+- several scaled down "lite" plugin versions, each optimized for a particular use case
 
 ## Credits
 
