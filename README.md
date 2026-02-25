@@ -6,15 +6,16 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 
 ## Example uses
 
-- You travel often around Europe, and want a pin for each country that links to the category archive of posts you have for each place.
+- You've traveled around Europe, and want a pin for each country that links to the category archive of posts you have for each place.
 - You post about your day’s hike and want to share the photos on a map using the built-in lightbox gallery and satellite map base.
-- Keep track of your progress in your quest goal to visit each of the National Parks, using different pins to show which ones you’ve completed and which ones you still have remaining. Add the date of your visit to the description field.
-- You create a map of places you visited on your last trip, with links to each blog post.
+- Keep track of your progress in your quest goal to visit each of the National Parks, using different pins to show which ones you’ve completed and which ones you still have remaining, along wiht a short summary of your trip in the description field.
+- You create a map of all the places you visited on your last trip, with links to each relevant blog post.
 - You want a map showing all of the airports you’ve flown through using various plane emojis as pin markers. Use the built-in legend to show whether each airport visit was roundtrip, one way, or just a layover.
 - Link to your pages displaying your photo collections using pins on a map.
 - Create a map of places you’ve reviewed on Yelp with links directly to each review on Yelp’s website.
 - Create a map of your summer trips using numbered pins to show which year you were there.
 - You want to create a ranking of your favorite coffeeshops in your area, so you use the numbered pins to rank them on a map. Each pin links to a section further down the page where you explain why that shop earned its ranking.
+- You've created a small walking tour of your neighborhood, using numbered pins for the order in which people whould folllow it.
 
 ## Features
 
@@ -31,8 +32,8 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 
 ## Installation
 
-1. Copy `layouts/shortcodes/map.html` into your blog's custom theme at `layouts/shortcodes/map.html`.
-2. Create one or more YAML data files in your `data/` folder (e.g., `data/europe.yml`). See [Data File Format](#data-file-format) below.
+1. Copy the contents of `map.html` into your blog's custom theme as a new template file at `layouts/shortcodes/map.html`.
+2. Create one or more YAML data files in your custom theme's `data/` folder (e.g., `data/europe.yml`). See [Data File Format](#data-file-format) below.
 3. Add the shortcode to any post or page. See [Usage](#usage) below.
 
 After installation your custom theme should include:
