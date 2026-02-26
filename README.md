@@ -20,6 +20,7 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 
 ## Features
 
+- **Display anywhere** - Display your map on posts, pages, or even category summaries.
 - **Multiple maps** — Create as many maps as you want, each powered by its own data file.
 - **130+ built-in icons** — Standalone shapes, circle badges, and numbered circles. Mix and match on the same map.
 - **Emoji support** — Use any emoji or unicode character as a marker.
