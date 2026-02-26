@@ -8,7 +8,7 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 
 - You want a map that organizes your travel posts by country, so you add pins that link to the category archives page for each.
 - You post about your morning hike and want to share the photos on a map using the built-in lightbox gallery and satellite map base.
-- Keep track of your progress in your quest goal to visit each of the National Parks, using different pins to show which ones you’ve completed and which ones you still have remaining, along wiht a short summary of your trip in the description field.
+- Keep track of your progress in your quest goal to visit each of the National Parks, using different pins to show which ones you’ve completed and which ones you still have remaining, along with a short summary of your trip in the description field.
 - You create a map of all the places you visited on your last trip, with links to each relevant blog post.
 - You want a map showing all of the airports you’ve flown through using various plane emojis as pin markers. Use the built-in legend to show whether each airport visit was roundtrip, one way, or just a layover.
 - Link to your pages displaying your photo collections using pins on a map.
@@ -21,7 +21,7 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 ## Features
 
 - **Multiple maps** — Create as many maps as you want, each powered by its own data file.
-- **120+ built-in icons** — Standalone shapes, circle badges, and numbered circles. Mix and match on the same map.
+- **130+ built-in icons** — Standalone shapes, circle badges, and numbered circles. Mix and match on the same map.
 - **Emoji support** — Use any emoji or unicode character as a marker.
 - **Per-pin colors** — Set a color on any individual pin using CSS color names or hex values.
 - **Custom defaults** — Override the default pin color and icon shape per map via shortcode parameters.
@@ -85,7 +85,7 @@ To customize a map's appearance, switch to named parameters:
 | Parameter | Default | Description |
 |---|---|---|
 | `source` | *(required)* | Name of the YAML data file in `data/` (without `.yml`). |
-| `height` | `500px` | Height of the map container. Any valid CSS value works. |
+| `height` | `500px` | Height of the map container. Any valid CSS value works (e.g., `400px`, `60vh`). A bare number like `400` is treated as pixels. |
 | `color` | `#4682B4` (SteelBlue) | Default pin color for pins that don't specify their own. Accepts CSS color names or hex values. |
 | `icon` | `pin` | Default icon shape for pins that don't specify their own. Accepts any value from [Available Icons](#available-icons). |
 | `basemap` | `voyager` | Base map tile style. Options: `osm`, `voyager`, `positron`, `dark`, `topo`, `satellite`. See [Base Maps](#base-maps). |
@@ -180,6 +180,8 @@ When a legend is present, the map's bottom corners become square and the legend 
 
 ## Available Icons
 
+See [icon-reference.html](icon-reference.html) for a visual preview of every icon.
+
 All built-in icons respect the `color` field. For example, a `circle-check` with `color: "Green"` renders as a green circle with a white checkmark.
 
 ### Standalone shapes
@@ -205,9 +207,14 @@ Filled circles with a white symbol cut out inside.
 | `circle-check` | Checkmark |
 | `circle-x` | X mark |
 | `circle-heart` | Heart |
-| `circle-star` | Star |
+| `circle-star` | Star (filled) |
+| `circle-star-full` | Star (filled) — identical to `circle-star`, but named explicitly for use alongside the half and empty variants below |
+| `circle-star-half` | Star (left half filled, right half outline) |
+| `circle-star-empty` | Star (outline only) |
 | `circle-dot` | Dot |
 | `circle-new` | The word "NEW" |
+| `circle-plus` | Plus sign |
+| `circle-minus` | Minus sign |
 
 ### Numbered circles
 
@@ -278,7 +285,6 @@ The shortcode loads Leaflet's CSS and JavaScript on demand — no changes to you
 - ability to toggle map markers on/off depending on pin style
 - marker clustering for large datasets
 - support for font awesome icons
-- several scaled down "lite" plugin versions, each optimized for a particular use case
 
 ## Credits
 
