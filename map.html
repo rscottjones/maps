@@ -23,7 +23,7 @@
     height                 — map container height (default: "500px")
     color                  — default pin color (default: "#4682B4" SteelBlue)
     icon                   — default icon shape (default: "pin")
-    basemap                — base map tile style (default: "voyager")
+    basemap                — base map tile style (default: "osm")
     legend                 — name of a legend YAML file in data/ (optional)
 
   Data file fields (name, lat, lon required; url, color, icon, description optional):
@@ -49,7 +49,8 @@
 
   Available icons:
     Standalone shapes:  pin (default), pin-small, star, heart, point, camera, video, image, gallery
-    Circle badges:      circle-check, circle-x, circle-heart, circle-star, circle-dot, circle-new
+    Circle badges:      circle-check, circle-x, circle-heart, circle-star, circle-dot, circle-new,
+                        circle-star-full, circle-star-half, circle-star-empty, circle-plus, circle-minus
     Numbered circles:   circle-0 through circle-9, circle-00 through circle-99
     Emoji / unicode:    Any other value is rendered as-is (e.g., "🏯", "🍕")
 */}}
@@ -66,7 +67,7 @@
 {{ $height := "500px" }}
 {{ $color := "#4682B4" }}
 {{ $icon := "pin" }}
-{{ $basemap := "voyager" }}
+{{ $basemap := "osm" }}
 {{ $legendSource := "" }}
 {{ if .IsNamedParams }}
   {{ with .Get "height" }}{{ $height = . }}{{ end }}
@@ -75,6 +76,8 @@
   {{ with .Get "basemap" }}{{ $basemap = . }}{{ end }}
   {{ with .Get "legend" }}{{ $legendSource = . }}{{ end }}
 {{ end }}
+{{/* Ensure height has a CSS unit — append px if purely numeric */}}
+{{ if findRE `^\d+$` $height }}{{ $height = printf "%spx" $height }}{{ end }}
 
 {{/* ── Build a unique map ID from the source name ── */}}
 {{ $mapID := printf "map-%s" $source }}
@@ -173,7 +176,7 @@
     pointer-events: none;
   }
 </style>
-<div id="{{ $mapID }}" style="width: 100%; height: {{ $height }}; border-radius: {{ if $legend }}12px 12px 0 0{{ else }}12px{{ end }}; margin: {{ if $legend }}30px 0 0{{ else }}30px 0{{ end }};"></div>
+<div id="{{ $mapID }}" style="width: 100%; height: {{ $height }} !important; border-radius: {{ if $legend }}12px 12px 0 0{{ else }}12px{{ end }}; margin: {{ if $legend }}30px 0 0{{ else }}30px 0{{ end }};"></div>
 {{ if $legend }}
 <div id="{{ $legendID }}" style="background: #f0f0f0; border-radius: 0 0 12px 12px; padding: 12px 16px; margin: 0 0 30px; display: flex; flex-wrap: wrap; gap: 20px; row-gap: 10px; align-items: center; font-family: sans-serif; font-size: 14px; color: #444;"></div>
 {{ end }}
@@ -317,28 +320,28 @@
       }
     },
     star: {
-      w: 26, h: 26, anchor: [13, 13], popup: [0, -13], shadow: false,
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
           + '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="' + c + '"/></svg>';
       }
     },
     heart: {
-      w: 26, h: 26, anchor: [13, 15], popup: [0, -13], shadow: false,
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
           + '<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53L12 21.35z" fill="' + c + '"/></svg>';
       }
     },
     point: {
-      w: 8, h: 8, anchor: [4, 4], popup: [0, -4], shadow: false,
+      w: 8, h: 8, anchor: [4, 4], popup: [0, -6], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8">'
           + '<circle cx="4" cy="4" r="4" fill="' + c + '"/></svg>';
       }
     },
     'circle-check': {
-      w: 26, h: 26, anchor: [13, 13], popup: [0, -13], shadow: false,
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
           + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
@@ -346,7 +349,7 @@
       }
     },
     'circle-x': {
-      w: 26, h: 26, anchor: [13, 13], popup: [0, -13], shadow: false,
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
           + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
@@ -355,7 +358,7 @@
       }
     },
     'circle-heart': {
-      w: 26, h: 26, anchor: [13, 13], popup: [0, -13], shadow: false,
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
           + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
@@ -365,7 +368,7 @@
       }
     },
     'circle-star': {
-      w: 26, h: 26, anchor: [13, 13], popup: [0, -13], shadow: false,
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
           + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
@@ -375,7 +378,7 @@
       }
     },
     'circle-dot': {
-      w: 26, h: 26, anchor: [13, 13], popup: [0, -13], shadow: false,
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
           + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
@@ -383,7 +386,7 @@
       }
     },
     camera: {
-      w: 26, h: 26, anchor: [13, 13], popup: [0, -13], shadow: false,
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
           + '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" fill="' + c + '"/>'
@@ -391,7 +394,7 @@
       }
     },
     video: {
-      w: 26, h: 26, anchor: [13, 13], popup: [0, -13], shadow: false,
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
           + '<rect x="1" y="5" width="15" height="14" rx="2" fill="' + c + '"/>'
@@ -399,7 +402,7 @@
       }
     },
     image: {
-      w: 26, h: 26, anchor: [13, 13], popup: [0, -13], shadow: false,
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
           + '<rect x="2" y="4" width="20" height="16" rx="2" fill="' + c + '"/>'
@@ -408,7 +411,7 @@
       }
     },
     gallery: {
-      w: 26, h: 26, anchor: [13, 13], popup: [0, -13], shadow: false,
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
           + '<rect x="5" y="2" width="17" height="13" rx="2" fill="' + c + '" opacity="0.5"/>'
@@ -427,13 +430,64 @@
       }
     },
     'circle-new': {
-      w: 26, h: 26, anchor: [13, 13], popup: [0, -13], shadow: false,
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
       svg: function(c) {
         return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
           + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
           + '<text x="12" y="13" text-anchor="middle" dominant-baseline="central" '
           + 'font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="8" fill="#fff" '
           + 'letter-spacing="0.5">NEW</text></svg>';
+      }
+    },
+    'circle-star-full': {
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+      svg: function(c) {
+        var star = 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z';
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+          + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+          + '<g transform="translate(4.8,4.8) scale(0.6)">'
+          + '<path d="' + star + '" fill="#fff"/></g></svg>';
+      }
+    },
+    'circle-star-half': {
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+      svg: function(c) {
+        var star = 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z';
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+          + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+          + '<g transform="translate(4.8,4.8) scale(0.6)">'
+          + '<defs><clipPath id="sh"><rect x="0" y="0" width="12" height="24"/></clipPath></defs>'
+          + '<path d="' + star + '" fill="#fff" clip-path="url(#sh)"/>'
+          + '<path d="' + star + '" fill="none" stroke="#fff" stroke-width="1.5"/>'
+          + '</g></svg>';
+      }
+    },
+    'circle-star-empty': {
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+      svg: function(c) {
+        var star = 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z';
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+          + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+          + '<g transform="translate(4.8,4.8) scale(0.6)">'
+          + '<path d="' + star + '" fill="none" stroke="#fff" stroke-width="1.5"/>'
+          + '</g></svg>';
+      }
+    },
+    'circle-plus': {
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+      svg: function(c) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+          + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+          + '<line x1="12" y1="6.5" x2="12" y2="17.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>'
+          + '<line x1="6.5" y1="12" x2="17.5" y2="12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>';
+      }
+    },
+    'circle-minus': {
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+      svg: function(c) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+          + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+          + '<line x1="6.5" y1="12" x2="17.5" y2="12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>';
       }
     }
   };
@@ -443,7 +497,7 @@
   (function() {
     function addNum(key, label, fs) {
       SHAPES[key] = {
-        w: 26, h: 26, anchor: [13, 13], popup: [0, -13], shadow: false,
+        w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
         svg: (function(n, f) {
           return function(c) {
             return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
@@ -492,7 +546,7 @@
         className: '',
         iconSize: [28, 28],
         iconAnchor: [14, 14],
-        popupAnchor: [0, -14]
+        popupAnchor: [0, -18]
       });
     }
     iconCache[key] = icon;
@@ -560,7 +614,7 @@
       }
     });
 
-    var map = L.map(MAP_ID, { scrollWheelZoom: false });
+    var map = L.map(MAP_ID, { scrollWheelZoom: false, zoomSnap: 0, zoomDelta: 1 });
 
     var BASEMAPS = {
       osm: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19, subdomains: 'abc' },
@@ -570,7 +624,7 @@
       topo: { url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, \u00a9 <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)', maxZoom: 17, subdomains: 'abc' },
       satellite: { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://www.esri.com/">Esri</a> \u2014 Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community', maxZoom: 19, subdomains: '' }
     };
-    var bm = BASEMAPS[BASEMAP] || BASEMAPS.voyager;
+    var bm = BASEMAPS[BASEMAP] || BASEMAPS.osm;
     L.tileLayer(bm.url, { attribution: bm.attribution, maxZoom: bm.maxZoom, subdomains: bm.subdomains }).addTo(map);
 
     var bounds = [];
@@ -594,7 +648,7 @@
           ? '<p style="margin: 6px 0 0; font-size: 14px; color: #444;">' + loc.description + '</p>'
           : '')
         + '</div>';
-      marker.bindPopup(popupContent);
+      marker.bindPopup(popupContent, { autoPanPaddingTopLeft: [50, 10] });
       bounds.push([loc.lat, loc.lon]);
     });
 
