@@ -44,8 +44,8 @@ layouts/
   shortcodes/
     map.html
 data/
-  europe.yml              ← your pin data
-  europe-legend.yml       ← optional legend
+  lisbon-guide.yml         ← your pin data
+  lisbon-guide-legend.yml  ← optional legend
 ```
 
 ## Usage
@@ -95,25 +95,12 @@ To customize a map's appearance, switch to named parameters:
 
 Each data file is a YAML list stored in your `data/` folder. Only `name`, `lat`, and `lon` are required — everything else is optional.
 
-```yaml
-- name: "Porto, Portugal"
-  lat: 41.1579
-  lon: -8.6291
-  url: "/categories/porto"
-  color: "Green"
-  icon: "circle-check"
-  description: "Three days exploring the Ribeira district and port wine cellars."
+### Basic example
 
+```yaml
 - name: "Paris, France"
   lat: 48.8566
   lon: 2.3522
-  icon: "star"
-  color: "Gold"
-
-- name: "Tokyo, Japan"
-  lat: 35.6762
-  lon: 139.6503
-  icon: "🏯"
 
 - name: "Barcelona, Spain"
   lat: 41.3874
@@ -123,6 +110,59 @@ Each data file is a YAML list stored in your `data/` folder. Only `name`, `lat`,
 - name: "Berlin, Germany"
   lat: 52.5200
   lon: 13.4050
+```
+
+### Full-featured example
+
+The included `data/lisbon-guide.yml` and `data/lisbon-guide-legend.yml` files demonstrate most of the plugin's features in one map — star ratings for restaurants, photo spots with lightbox images, a numbered walking tour, emoji markers, wishlist pins, descriptions, and a color-coded legend:
+
+```
+{{< map source="lisbon-guide" legend="lisbon-guide-legend" basemap="positron" >}}
+```
+
+Here's a sampling of what's in the data file:
+
+```yaml
+# Star ratings for restaurants
+- name: "Time Out Market"
+  lat: 38.7068
+  lon: -9.1459
+  icon: "circle-star-full"
+  color: "Gold"
+  url: "/2025/03/time-out-market"
+  description: "The best food hall in Europe. Don't skip the pastel de nata stand near the back."
+
+# Photo spots — image URLs open in the lightbox
+- name: "Miradouro da Graça"
+  lat: 38.7160
+  lon: -9.1302
+  icon: "camera"
+  color: "Tomato"
+  url: "https://example.com/photos/lisbon-graca-sunset.jpg"
+  description: "Best sunset viewpoint in the city."
+
+# Numbered walking tour
+- name: "Rossio Square"
+  lat: 38.7139
+  lon: -9.1394
+  icon: "circle-1"
+  color: "#7C3AED"
+  description: "Start here. Grab a coffee at one of the square's cafés."
+
+# Emoji markers
+- name: "Jerónimos Monastery"
+  lat: 38.6979
+  lon: -9.2068
+  icon: "⛪"
+  url: "https://en.wikipedia.org/wiki/Jerónimos_Monastery"
+  description: "UNESCO World Heritage Site. Stunning Manueline architecture."
+
+# Wishlist — default color, no URL
+- name: "Sintra Day Trip"
+  lat: 38.7875
+  lon: -9.3906
+  icon: "circle-dot"
+  description: "Pena Palace and the Moorish Castle. Didn't have time this trip."
 ```
 
 ### Field reference
@@ -232,18 +272,26 @@ When a legend is present, the map's bottom corners become square and the legend 
 ### Legend file format
 
 ```yaml
-- label: "Visited"
-  icon: "circle-check"
-  color: "Green"
-  url: "#visited"
+- label: "Loved it"
+  icon: "circle-star-full"
+  color: "Gold"
 
-- label: "Favorite"
-  icon: "star"
+- label: "It was fine"
+  icon: "circle-star-half"
+  color: "Gold"
+
+- label: "Underwhelming"
+  icon: "circle-star-empty"
   color: "Gold"
 
 - label: "Photo spot"
   icon: "camera"
   color: "Tomato"
+
+- label: "Walking tour"
+  icon: "circle-1"
+  color: "#7C3AED"
+  url: "#walking-tour"
 
 - label: "Wishlist"
   icon: "circle-dot"
@@ -261,7 +309,7 @@ When a legend is present, the map's bottom corners become square and the legend 
 ### Shortcode usage
 
 ```
-{{< map source="europe" legend="europe-legend" >}}
+{{< map source="lisbon-guide" legend="lisbon-guide-legend" basemap="positron" >}}
 ```
 
 ## Quest Starter Data
@@ -273,7 +321,7 @@ See the Quest Starter Data folder for yaml files to get you started with a numbe
 - **Finding coordinates:** Search for a location on [Google Maps](https://maps.google.com), right-click the spot, and the latitude/longitude will appear at the top of the context menu. Click to copy.
 - **Scroll zoom is disabled** so visitors don't get trapped in the map while scrolling. They can still zoom with the `+`/`-` buttons or by pinching on mobile.
 - **Auto-fit:** The map automatically zooms and pans to fit all your pins.
-- **Mixing icons and colors:** Combine different icons and colors to represent categories — `circle-check` in green for visited places, `star` in gold for favorites, `circle-dot` for your wishlist. Use a legend to explain the key.
+- **Mixing icons and colors:** Combine different icons and colors to represent categories — `circle-star-full` in gold for favorites, `camera` in tomato for photo spots, `circle-dot` for your wishlist. Use a legend to explain the key. See the included `data/lisbon-guide.yml` for a complete example.
 - **Photo maps:** Set each pin's `url` to an image file. The lightbox handles the rest — click a pin name to view the photo, then use arrows, keyboard, or swipe to browse all photos on the map. Click the backdrop or press Escape to close. On Micro.blog, link to the `-m` (medium) version of an image to keep load times fast.
 
 ## Theme Compatibility
