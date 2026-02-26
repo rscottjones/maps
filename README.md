@@ -6,17 +6,17 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 
 ## Example uses
 
-- You want a map that organizes your travel posts by country, so you add pins that link to the category archives page for each.
-- You post about your morning hike and want to share the photos on a map using the built-in lightbox gallery and satellite map base.
-- Keep track of your progress in your quest goal to visit each of the National Parks, using different pins to show which ones you’ve completed and which ones you still have remaining, along with a short summary of your trip in the description field.
-- You create a map of all the places you visited on your last trip, with links to each relevant blog post.
-- You want a map showing all of the airports you’ve flown through using various plane emojis as pin markers. Use the built-in legend to show whether each airport visit was roundtrip, one way, or just a layover.
-- Link to your pages displaying your photo collections using pins on a map.
-- Create a map of your ratings of local restaurants, using the built-in "full star," "half star," and "zero star" icons.
-- Create a map of places you’ve _already reviewed_ on Yelp with links directly to each of your reviews on Yelp’s website.
-- Create a map of your summer trips using numbered pins to show which year you were there.
-- You want to create a ranking of your favorite coffeeshops in your area, so you use the numbered pins to rank them on a map. Each pin links to a section further down the page where you explain why that shop earned its ranking.
-- You've created a small walking tour of your neighborhood, using numbered pins for the order in which people should follow it.
+- Organize your travel posts by country, with each pin linking to a category archive page.
+- Post about a hike and share your photos on a topo or satellite map using the built-in lightbox gallery.
+- Track your progress on a quest to visit every National Park — use different pins for completed vs. remaining, with a short trip summary in each description.
+- Map all the places you visited on your last trip, with links to the relevant blog posts.
+- Show every airport you've flown through using plane emojis as markers. Add a legend to distinguish roundtrips, one-ways, and layovers.
+- Link to your photo collection pages using pins on a map.
+- Rate local restaurants using the built-in "full star," "half star," and "empty star" circle icons.
+- Map places you've already reviewed on Yelp, with each pin linking directly to your review.
+- Map your summer trips using numbered pins to show which year you visited each place.
+- Rank your favorite coffeeshops with numbered pins. Link each one to a section further down the page explaining why it earned its spot.
+- Build a walking tour of your neighborhood, with numbered pins marking the stops in order.
 
 ## Features
 
