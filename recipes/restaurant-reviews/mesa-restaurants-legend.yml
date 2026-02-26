@@ -1,0 +1,11 @@
+- label: "Loved it"
+  icon: "circle-star-full"
+  color: "Gold"
+
+- label: "It was fine"
+  icon: "circle-star-half"
+  color: "Gold"
+
+- label: "Underwhelming"
+  icon: "circle-star-empty"
+  color: "Gold"

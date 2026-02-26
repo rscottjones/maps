@@ -1,0 +1,73 @@
+# Mesa restaurant reviews
+# Usage: {{< map source="mesa-restaurants" legend="mesa-restaurants-legend" color="Gold" icon="circle-star-full" >}}
+
+# ── Loved it (uses map defaults: circle-star-full + Gold) ──
+
+- name: "Worth Takeaway"
+  lat: 33.4153
+  lon: -111.8375
+  url: "#worth-takeaway"
+  description: "Creative sandwiches and killer brunch in a tiny downtown space. The spicy candied BLT is a must. Visited March 2025."
+
+- name: "Green Corner Restaurant"
+  lat: 33.3941
+  lon: -111.8535
+  url: "#green-corner"
+  description: "Best Mediterranean in the East Valley. Huge portions, free baklava with every plate. Visited January 2025."
+
+- name: "República Empanada"
+  lat: 33.4131
+  lon: -111.8260
+  url: "#republica-empanada"
+  description: "Handmade empanadas in a colorful space. Try the Cubana and the green sauce. Visited February 2025."
+
+- name: "Bobby-Q BBQ"
+  lat: 33.3851
+  lon: -111.8062
+  url: "#bobby-q"
+  description: "Upscale BBQ done right. The brisket and complimentary cornbread are both outstanding. Visited April 2025."
+
+- name: "Organ Stop Pizza"
+  lat: 33.3929
+  lon: -111.8078
+  url: "#organ-stop-pizza"
+  description: "You come for the world's largest Wurlitzer organ, you stay for surprisingly good pizza. A Mesa institution. Visited December 2024."
+
+# ── It was fine ──
+
+- name: "Backyard Taco"
+  lat: 33.4227
+  lon: -111.7982
+  icon: "circle-star-half"
+  url: "#backyard-taco"
+  description: "Solid street tacos with fresh flour tortillas. Good but not life-changing. Hit the salsa bar. Visited March 2025."
+
+- name: "Los Dos Molinos"
+  lat: 33.4096
+  lon: -111.8571
+  icon: "circle-star-half"
+  url: "#los-dos-molinos"
+  description: "New Mexican food that brings the heat. The enchiladas are legit but some dishes are uneven. Visited May 2025."
+
+- name: "T.C. Eggington's"
+  lat: 33.3838
+  lon: -111.8593
+  icon: "circle-star-half"
+  url: "#tc-eggingtons"
+  description: "Reliable brunch spot. The biscuits and gravy are great but the potatoes are hit-or-miss. Visited February 2025."
+
+# ── Underwhelming ──
+
+- name: "Tacos Chiwas"
+  lat: 33.4149
+  lon: -111.8352
+  icon: "circle-star-empty"
+  url: "#tacos-chiwas"
+  description: "Decent street tacos but underwhelming compared to the hype. Elote was the highlight. Visited January 2025."
+
+- name: "Pho Thuan Thanh"
+  lat: 33.4056
+  lon: -111.8755
+  icon: "circle-star-empty"
+  url: "#pho-thuan-thanh"
+  description: "The pho broth is solid but service was rough around the edges. Overpriced for the portion size. Visited April 2025."
