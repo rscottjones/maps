@@ -319,7 +319,7 @@ See the Quest Starter Data folder for yaml files to get you started with a numbe
 
 ## Tips
 
-- **Finding coordinates:** Search for a location on [Google Maps](https://maps.google.com), right-click the spot, and the latitude/longitude will appear at the top of the context menu. Click to copy.
+- **Finding coordinates:** Search for a location on [Google Maps](https://maps.google.com), right-click the spot, and the latitude/longitude will appear at the top of the context menu. Click to copy. Alternatively, use [GPS-Coordinates.org](https://www.gps-coordinates.org) or [LatLong](https://www.latlong.net).
 - **Scroll zoom is disabled** so visitors don't get trapped in the map while scrolling. They can still zoom with the `+`/`-` buttons or by pinching on mobile.
 - **Auto-fit:** The map automatically zooms and pans to fit all your pins.
 - **Mixing icons and colors:** Combine different icons and colors to represent categories — `circle-star-full` in gold for favorites, `camera` in tomato for photo spots, `circle-dot` for your wishlist. Use a legend to explain the key. See the included `data/lisbon-guide.yml` for a complete example.
