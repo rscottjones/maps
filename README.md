@@ -6,7 +6,7 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 
 ## Example uses
 
-- You want a map that organizes your travel posts by country, so you add pins that link to the category archives page for each. [[sample](https://adventuresaroundthe.world/map/)]
+- You want a map that organizes your travel posts by country, so you add pins that link to the category archives page for each.
 - You post about your morning hike and want to share the photos on a map using the built-in lightbox gallery and satellite map base.
 - Keep track of your progress in your quest goal to visit each of the National Parks, using different pins to show which ones you’ve completed and which ones you still have remaining, along with a short summary of your trip in the description field.
 - You create a map of all the places you visited on your last trip, with links to each relevant blog post.
@@ -137,47 +137,6 @@ Each data file is a YAML list stored in your `data/` folder. Only `name`, `lat`,
 | `color` | No | Color for this pin. Accepts any CSS color name (`Green`, `Tomato`, `Gold`) or hex value (`#16A34A`). When omitted, the pin uses the map's default color. See [CSS color names](https://www.w3schools.com/colors/colors_names.asp) for a full list. |
 | `icon` | No | Icon shape for this pin. Defaults to `pin`. See [Available Icons](#available-icons). |
 
-## Legend
-
-To display a key below your map, create a separate YAML file for the legend and reference it with the `legend` parameter. The legend is entirely optional — maps without it display with fully rounded corners as usual.
-
-When a legend is present, the map's bottom corners become square and the legend bar attaches flush underneath with its own rounded bottom corners, so they read as one unit.
-
-### Legend file format
-
-```yaml
-- label: "Visited"
-  icon: "circle-check"
-  color: "Green"
-  url: "#visited"
-
-- label: "Favorite"
-  icon: "star"
-  color: "Gold"
-
-- label: "Photo spot"
-  icon: "camera"
-  color: "Tomato"
-
-- label: "Wishlist"
-  icon: "circle-dot"
-```
-
-### Legend field reference
-
-| Field | Required | Description |
-|---|---|---|
-| `label` | Yes | The text displayed next to the icon. |
-| `icon` | No | The icon shape to display. Defaults to `pin` if omitted. Supports all the same values as the pin `icon` field, including emoji. |
-| `color` | No | The color of the icon. When omitted, uses the map's default color. |
-| `url` | No | A link destination. When present, the label becomes a clickable link. Useful for linking to a bookmark or section further down the page (e.g., `#visited`). |
-
-### Shortcode usage
-
-```
-{{< map source="europe" legend="europe-legend" >}}
-```
-
 ## Available Icons
 
 See [icon-reference.html](icon-reference.html) for a visual preview of every icon.
@@ -263,6 +222,47 @@ By default, maps use CARTO Voyager tiles. You can switch to a different style us
 | `satellite` | Esri World Imagery — satellite photography |
 
 All options are free and require no API key. The Esri satellite tiles use a legacy service that may require registration in the future; see [Esri's terms](https://wiki.openstreetmap.org/wiki/Esri) for details.
+
+## Legend
+
+To display a key below your map, create a separate YAML file for the legend and reference it with the `legend` parameter. The legend is entirely optional — maps without it display with fully rounded corners as usual.
+
+When a legend is present, the map's bottom corners become square and the legend bar attaches flush underneath with its own rounded bottom corners, so they read as one unit.
+
+### Legend file format
+
+```yaml
+- label: "Visited"
+  icon: "circle-check"
+  color: "Green"
+  url: "#visited"
+
+- label: "Favorite"
+  icon: "star"
+  color: "Gold"
+
+- label: "Photo spot"
+  icon: "camera"
+  color: "Tomato"
+
+- label: "Wishlist"
+  icon: "circle-dot"
+```
+
+### Legend field reference
+
+| Field | Required | Description |
+|---|---|---|
+| `label` | Yes | The text displayed next to the icon. |
+| `icon` | No | The icon shape to display. Defaults to `pin` if omitted. Supports all the same values as the pin `icon` field, including emoji. |
+| `color` | No | The color of the icon. When omitted, uses the map's default color. |
+| `url` | No | A link destination. When present, the label becomes a clickable link. Useful for linking to a bookmark or section further down the page (e.g., `#visited`). |
+
+### Shortcode usage
+
+```
+{{< map source="europe" legend="europe-legend" >}}
+```
 
 ## Quest Starter Data
 
