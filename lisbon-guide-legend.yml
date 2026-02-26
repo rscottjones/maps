@@ -1,0 +1,26 @@
+# Legend for lisbon-guide.yml
+# Usage: {{< map source="lisbon-guide" legend="lisbon-guide-legend" basemap="positron" >}}
+
+- label: "Loved it"
+  icon: "circle-star-full"
+  color: "Gold"
+
+- label: "It was fine"
+  icon: "circle-star-half"
+  color: "Gold"
+
+- label: "Underwhelming"
+  icon: "circle-star-empty"
+  color: "Gold"
+
+- label: "Photo spot"
+  icon: "camera"
+  color: "Tomato"
+
+- label: "Walking tour"
+  icon: "circle-1"
+  color: "#7C3AED"
+  url: "#walking-tour"
+
+- label: "Wishlist"
+  icon: "circle-dot"

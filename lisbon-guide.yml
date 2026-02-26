@@ -1,0 +1,137 @@
+# ──────────────────────────────────────────────
+# Maps for Micro.blog — Example Data File
+# ──────────────────────────────────────────────
+# A Lisbon travel guide showcasing most plugin features:
+#   - Multiple icon types (pin, star, camera, circle badges, numbered, emoji)
+#   - Per-pin colors
+#   - URLs (regular links and image links for the lightbox)
+#   - Descriptions
+#   - Mix of visited/favorite/wishlist categories
+#
+# Usage:
+#   {{< map source="lisbon-guide" legend="lisbon-guide-legend" basemap="positron" color="SteelBlue" >}}
+# ──────────────────────────────────────────────
+
+# ── Favorites ──
+
+- name: "Time Out Market"
+  lat: 38.7068
+  lon: -9.1459
+  icon: "circle-star-full"
+  color: "Gold"
+  url: "/2025/03/time-out-market"
+  description: "The best food hall in Europe. Don't skip the pastel de nata stand near the back."
+
+- name: "Pastéis de Belém"
+  lat: 38.6976
+  lon: -9.2031
+  icon: "circle-star-full"
+  color: "Gold"
+  url: "/2025/03/belem-day-trip"
+  description: "The original custard tart since 1837. Worth the line every time."
+
+- name: "Cervejaria Ramiro"
+  lat: 38.7264
+  lon: -9.1365
+  icon: "circle-star-half"
+  color: "Gold"
+  description: "Famous seafood spot. Incredible prawns, but pricey and touristy."
+
+- name: "Café A Brasileira"
+  lat: 38.7104
+  lon: -9.1424
+  icon: "circle-star-empty"
+  color: "Gold"
+  description: "Historic but overrated. Better for the photo op with the Fernando Pessoa statue than the coffee."
+
+# ── Photo spots ──
+
+- name: "Miradouro da Graça"
+  lat: 38.7160
+  lon: -9.1302
+  icon: "camera"
+  color: "Tomato"
+  url: "https://micro.blog/photos/800/lisbon-graca-sunset.jpg"
+  description: "Best sunset viewpoint in the city."
+
+- name: "Praça do Comércio"
+  lat: 38.7075
+  lon: -9.1365
+  icon: "camera"
+  color: "Tomato"
+  url: "https://micro.blog/photos/800/lisbon-praca-comercio.jpg"
+
+- name: "Tram 28 at Portas do Sol"
+  lat: 38.7130
+  lon: -9.1307
+  icon: "camera"
+  color: "Tomato"
+  url: "https://micro.blog/photos/800/lisbon-tram28.jpg"
+  description: "Catch the yellow tram rounding the corner — the classic Lisbon shot."
+
+# ── Walking tour (numbered stops) ──
+
+- name: "Rossio Square"
+  lat: 38.7139
+  lon: -9.1394
+  icon: "circle-1"
+  color: "#7C3AED"
+  description: "Start here. Grab a coffee at one of the square's cafés."
+
+- name: "Santa Justa Elevator"
+  lat: 38.7121
+  lon: -9.1393
+  icon: "circle-2"
+  color: "#7C3AED"
+  url: "https://en.wikipedia.org/wiki/Santa_Justa_Lift"
+  description: "Neo-Gothic iron elevator from 1902. Skip the line and walk up through the back streets instead."
+
+- name: "Carmo Convent"
+  lat: 38.7121
+  lon: -9.1407
+  icon: "circle-3"
+  color: "#7C3AED"
+  description: "Ruined Gothic church open to the sky since the 1755 earthquake."
+
+- name: "Miradouro de São Pedro de Alcântara"
+  lat: 38.7155
+  lon: -9.1457
+  icon: "circle-4"
+  color: "#7C3AED"
+  description: "Panoramic terrace overlooking the castle and Alfama."
+
+- name: "LX Factory"
+  lat: 38.7036
+  lon: -9.1782
+  icon: "circle-5"
+  color: "#7C3AED"
+  url: "/2025/03/lx-factory"
+  description: "End here. Industrial complex turned creative hub. Great bookshop, street art, and rooftop bar."
+
+# ── Wishlist (not yet visited) ──
+
+- name: "Oceanário de Lisboa"
+  lat: 38.7636
+  lon: -9.0935
+  icon: "circle-dot"
+  description: "One of the world's best aquariums. Next time."
+
+- name: "Sintra Day Trip"
+  lat: 38.7875
+  lon: -9.3906
+  icon: "circle-dot"
+  description: "Pena Palace and the Moorish Castle. Didn't have time this trip."
+
+# ── Emoji markers ──
+
+- name: "Jerónimos Monastery"
+  lat: 38.6979
+  lon: -9.2068
+  icon: "⛪"
+  url: "https://en.wikipedia.org/wiki/Jerónimos_Monastery"
+  description: "UNESCO World Heritage Site. Stunning Manueline architecture."
+
+- name: "Humberto Delgado Airport"
+  lat: 38.7756
+  lon: -9.1354
+  icon: "✈️"
