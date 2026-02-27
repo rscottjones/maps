@@ -539,6 +539,9 @@
         opts.shadowAnchor = def.shadowAnchor || [12, 41];
       }
       icon = L.icon(opts);
+    } else if (/^icon-\d+/.test(shape)) {
+      /* Unrecognized Google My Maps icon ID — fall back to default */
+      return createIcon(DEFAULT_ICON, fillColor);
     } else {
       /* Treat unrecognized icon values as emoji / unicode */
       icon = L.divIcon({
@@ -574,6 +577,11 @@
       var iconHTML;
       if (def) {
         iconHTML = '<img src="data:image/svg+xml;base64,' + btoa(def.svg(color))
+          + '" width="18" height="18" style="vertical-align:middle;display:inline-block;" />';
+      } else if (/^icon-\d+/.test(shape)) {
+        /* Unrecognized Google icon ID — render default icon */
+        var fallback = SHAPES[DEFAULT_ICON];
+        iconHTML = '<img src="data:image/svg+xml;base64,' + btoa(fallback.svg(color))
           + '" width="18" height="18" style="vertical-align:middle;display:inline-block;" />';
       } else {
         iconHTML = '<span style="font-size:18px;line-height:1;vertical-align:middle;">' + shape + '</span>';
