@@ -7,7 +7,7 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 ## Example uses
 
 - Organize your travel posts by country, with each pin linking to a category archive page.
-- Post about a hike and share your photos on a topo or satellite map using the built-in lightbox gallery.
+- Post about a morning hike and share your photos on a satellite map using the built-in lightbox gallery.
 - Track your progress on a quest to visit every National Park — use different pins for completed vs. remaining, with a short trip summary in each description.
 - Map all the places you visited on your last trip, with links to the relevant blog posts.
 - Show every airport you've flown through using plane emojis as markers. Add a legend to distinguish roundtrips, one-ways, and layovers.
@@ -20,7 +20,6 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 
 ## Features
 
-- **Display anywhere** - Display your map on posts, pages, or even category summaries.
 - **Multiple maps** — Create as many maps as you want, each powered by its own data file.
 - **130+ built-in icons** — Standalone shapes, circle badges, and numbered circles. Mix and match on the same map.
 - **Emoji support** — Use any emoji or unicode character as a marker.
@@ -34,6 +33,16 @@ Inspired by [microblog-map](https://github.com/vladcampos/microblog-map) by Vlad
 
 ## Installation
 
+### From the Micro.blog plugin directory
+
+1. Go to **Account → Plug-ins → Find Plug-ins** and search for "Maps for Micro.blog." Click **Install**.
+2. Create one or more YAML data files in your custom theme's `data/` folder (e.g., `data/europe.yml`). See [Data File Format](#data-file-format) below.
+3. Add the shortcode to any post or page. See [Usage](#usage) below.
+
+The plugin installs the shortcode automatically — you just need to add your data files.
+
+### Manual installation
+
 1. Copy the contents of `map.html` into your blog's custom theme as a new template file at `layouts/shortcodes/map.html`.
 2. Create one or more YAML data files in your custom theme's `data/` folder (e.g., `data/europe.yml`). See [Data File Format](#data-file-format) below.
 3. Add the shortcode to any post or page. See [Usage](#usage) below.
@@ -45,8 +54,8 @@ layouts/
   shortcodes/
     map.html
 data/
-  lisbon-guide.yml         ← your pin data
-  lisbon-guide-legend.yml  ← optional legend
+  europe.yml              ← your pin data
+  europe-legend.yml       ← optional legend
 ```
 
 ## Usage
@@ -89,7 +98,7 @@ To customize a map's appearance, switch to named parameters:
 | `height` | `500px` | Height of the map container. Any valid CSS value works (e.g., `400px`, `60vh`). A bare number like `400` is treated as pixels. |
 | `color` | `#4682B4` (SteelBlue) | Default pin color for pins that don't specify their own. Accepts CSS color names or hex values. |
 | `icon` | `pin` | Default icon shape for pins that don't specify their own. Accepts any value from [Available Icons](#available-icons). |
-| `basemap` | `osm` | Base map tile style. Options: `osm`, `voyager`, `positron`, `dark`, `topo`, `satellite`. See [Base Maps](#base-maps). |
+| `basemap` | `osm` | Base map tile style. Options: `osm`, `voyager`, `positron`, `topo`, `satellite`, `streets`, `esri-topo`, `natgeo`. See [Base Maps](#base-maps). |
 | `legend` | *(none)* | Name of a legend YAML file in `data/` (without `.yml`). When provided, a key is displayed below the map. |
 
 ## Data File Format
@@ -245,6 +254,8 @@ icon: "🏖️"
 
 Emoji appearance and positioning varies across operating systems and browsers. The `color` field has no effect on emoji icons.
 
+Any icon value that looks like an unconverted Google My Maps ID (e.g., `icon-1615`) is automatically rendered as the default pin rather than displaying the raw text on the map. This means you can convert a Google My Maps export and use it immediately, then replace the icon IDs at your own pace.
+
 ## Base Maps
 
 By default, maps use standard OpenStreetMap tiles. You can switch to a different style using the `basemap` parameter:
@@ -258,11 +269,13 @@ By default, maps use standard OpenStreetMap tiles. You can switch to a different
 | `osm` | Standard OpenStreetMap tiles *(default)* |
 | `voyager` | CARTO Voyager — clean, colorful street map with a modern feel |
 | `positron` | CARTO Positron — light gray, minimal. Great for making pins stand out |
-| `dark` | CARTO Dark Matter — dark gray. Striking with colorful pins |
 | `topo` | OpenTopoMap — topographic map with contour lines and elevation shading |
 | `satellite` | Esri World Imagery — satellite photography |
+| `streets` | Esri World Street Map — detailed, colorful street map with a Google Maps feel |
+| `esri-topo` | Esri World Topo Map — polished topographic map with shaded relief |
+| `natgeo` | National Geographic World Map — warm parchment tones with shaded relief |
 
-All options are free and require no API key. The Esri satellite tiles use a legacy service that may require registration in the future; see [Esri's terms](https://wiki.openstreetmap.org/wiki/Esri) for details.
+All options are free and require no API key. The Esri tiles use a legacy service that may require registration in the future; see [Esri's terms](https://wiki.openstreetmap.org/wiki/Esri) for details.
 
 ## Legend
 
@@ -319,7 +332,7 @@ See the Quest Starter Data folder for yaml files to get you started with a numbe
 
 ## Tips
 
-- **Finding coordinates:** Search for a location on [Google Maps](https://maps.google.com), right-click the spot, and the latitude/longitude will appear at the top of the context menu. Click to copy. Alternatively, use [GPS-Coordinates.org](https://www.gps-coordinates.org) or [LatLong](https://www.latlong.net).
+- **Finding coordinates:** Search for a location on [Google Maps](https://maps.google.com), right-click the spot, and the latitude/longitude will appear at the top of the context menu. Click to copy.
 - **Scroll zoom is disabled** so visitors don't get trapped in the map while scrolling. They can still zoom with the `+`/`-` buttons or by pinching on mobile.
 - **Auto-fit:** The map automatically zooms and pans to fit all your pins.
 - **Mixing icons and colors:** Combine different icons and colors to represent categories — `circle-star-full` in gold for favorites, `camera` in tomato for photo spots, `circle-dot` for your wishlist. Use a legend to explain the key. See the included `data/lisbon-guide.yml` for a complete example.
