@@ -307,7 +307,7 @@ window.__mapShapes = {
     svg: function(c) {
       return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
         + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
-        + '<text x="12" y="13" text-anchor="middle" dominant-baseline="central" '
+        + '<text x="12" y="12" text-anchor="middle" dominant-baseline="central" '
         + 'font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="8" fill="#fff" '
         + 'letter-spacing="0.5">NEW</text></svg>';
     }
@@ -374,15 +374,15 @@ window.__mapShapes = {
         return function(c) {
           return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
             + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
-            + '<text x="12" y="13" text-anchor="middle" dominant-baseline="central" '
+            + '<text x="12" y="12" text-anchor="middle" dominant-baseline="central" '
             + 'font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="' + f + '" fill="#fff">'
             + n + '</text></svg>';
         };
       })(label, fs)
     };
   }
-  for (var i = 0; i <= 9; i++) { addNum('circle-' + i, String(i), '12'); }
-  for (var j = 0; j <= 99; j++) { var p = (j < 10 ? '0' : '') + j; addNum('circle-' + p, p, '10'); }
+  for (var i = 0; i <= 9; i++) { addNum('circle-' + i, String(i), '16'); }
+  for (var j = 0; j <= 99; j++) { var p = (j < 10 ? '0' : '') + j; addNum('circle-' + p, p, '13'); }
 })();
 window.__mapBasemaps = {
   osm: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19, subdomains: 'abc' },
@@ -669,7 +669,7 @@ window.__mapBasemaps = {
     });
 
     if (bounds.length > 0) {
-      map.fitBounds(bounds, { padding: [40, 55] });
+      map.fitBounds(bounds, { padding: [40, 50] });
     }
 
     buildLegend();
