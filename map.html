@@ -79,9 +79,12 @@
 {{/* Ensure height has a CSS unit — append px if purely numeric */}}
 {{ if findRE `^\d+$` $height }}{{ $height = printf "%spx" $height }}{{ end }}
 
-{{/* ── Build a unique map ID from the source name ── */}}
-{{ $mapID := printf "map-%s" $source }}
-{{ $legendID := printf "legend-%s" $source }}
+{{/* ── Build a unique map ID using a per-page counter ── */}}
+{{ if not (.Page.Scratch.Get "mapCount") }}{{ .Page.Scratch.Set "mapCount" 0 }}{{ end }}
+{{ $mapN := .Page.Scratch.Get "mapCount" }}
+{{ .Page.Scratch.Set "mapCount" (add $mapN 1) }}
+{{ $mapID := printf "map-%s-%d" $source $mapN }}
+{{ $legendID := printf "legend-%s-%d" $source $mapN }}
 
 {{/* ── Look up the data files ── */}}
 {{ $locations := index .Site.Data $source }}
