@@ -1,0 +1,258 @@
+<script>
+if (!window.__mapMediaHelpers) {
+  window.__mapMediaHelpers = true;
+
+  var IMAGE_EXTS = /\.(jpe?g|png|gif|webp)(\?.*)?$/i;
+  var VIDEO_EXTS = /\.(mp4|m4v|mov|webm|ogv|m3u8)(\?.*)?$/i;
+  var AUDIO_EXTS = /\.(mp3|m4a|aac|ogg|oga|wav|flac)(\?.*)?$/i;
+
+  function isImageUrl(url) {
+    return url && IMAGE_EXTS.test(url);
+  }
+
+  function isVideoUrl(url) {
+    return url && VIDEO_EXTS.test(url);
+  }
+
+  function isAudioUrl(url) {
+    return url && AUDIO_EXTS.test(url);
+  }
+
+  /* Load Font Awesome Free on demand (once per page, shared with Tracks plugin) */
+  function loadFontAwesome() {
+    if (window.__faLoaded) return;
+    window.__faLoaded = true;
+    var css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
+    document.head.appendChild(css);
+  }
+
+  function ensureLightbox() {
+    if (document.getElementById('map-lightbox')) return;
+    var overlay = document.createElement('div');
+    overlay.id = 'map-lightbox';
+    overlay.className = 'map-lightbox';
+    overlay.innerHTML = '<button class="map-lightbox-arrow map-lightbox-prev">&#8249;</button>'
+      + '<img src="" alt="" />'
+      + '<button class="map-lightbox-arrow map-lightbox-next">&#8250;</button>'
+      + '<div class="map-lightbox-counter"></div>'
+      + '<div class="map-lightbox-caption"></div>';
+    document.body.appendChild(overlay);
+
+    var img = overlay.querySelector('img');
+    var caption = overlay.querySelector('.map-lightbox-caption');
+    var counter = overlay.querySelector('.map-lightbox-counter');
+    var prevBtn = overlay.querySelector('.map-lightbox-prev');
+    var nextBtn = overlay.querySelector('.map-lightbox-next');
+    var gallery = [];
+    var currentIdx = 0;
+
+    function show(idx) {
+      if (idx < 0 || idx >= gallery.length) return;
+      currentIdx = idx;
+      img.src = gallery[idx].url;
+      caption.textContent = gallery[idx].name || '';
+      var hasMultiple = gallery.length > 1;
+      counter.textContent = hasMultiple ? (idx + 1) + ' / ' + gallery.length : '';
+      prevBtn.style.display = hasMultiple && idx > 0 ? '' : 'none';
+      nextBtn.style.display = hasMultiple && idx < gallery.length - 1 ? '' : 'none';
+    }
+
+    function close() { overlay.classList.remove('active'); }
+
+    /* Close on backdrop click (not on img or arrows) */
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) close();
+    });
+
+    prevBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      show(currentIdx - 1);
+    });
+
+    nextBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      show(currentIdx + 1);
+    });
+
+    img.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+
+    /* Keyboard navigation */
+    document.addEventListener('keydown', function(e) {
+      if (!overlay.classList.contains('active')) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowLeft') show(currentIdx - 1);
+      else if (e.key === 'ArrowRight') show(currentIdx + 1);
+    });
+
+    /* Swipe support */
+    var touchStartX = 0;
+    var touchStartY = 0;
+    overlay.addEventListener('touchstart', function(e) {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+    overlay.addEventListener('touchend', function(e) {
+      var dx = e.changedTouches[0].screenX - touchStartX;
+      var dy = e.changedTouches[0].screenY - touchStartY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+        if (dx < 0) show(currentIdx + 1);
+        else show(currentIdx - 1);
+      }
+    }, { passive: true });
+
+    window.__mapLightbox = {
+      open: function(images, startIdx) {
+        gallery = images;
+        show(startIdx || 0);
+        overlay.classList.add('active');
+      }
+    };
+  }
+
+  function ensureVideoPlayer() {
+    if (document.getElementById('map-video-overlay')) return;
+    var overlay = document.createElement('div');
+    overlay.id = 'map-video-overlay';
+    overlay.className = 'map-video-overlay';
+    overlay.innerHTML = '<div class="map-video-wrap">'
+      + '<video controls muted playsinline preload="metadata"></video>'
+      + '<div class="map-video-spinner"></div>'
+      + '<button class="map-video-replay" aria-label="Play again">'
+      + '<svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>'
+      + '</button>'
+      + '</div>'
+      + '<div class="map-video-caption"></div>';
+    document.body.appendChild(overlay);
+
+    var wrap = overlay.querySelector('.map-video-wrap');
+    var video = overlay.querySelector('video');
+    var spinner = overlay.querySelector('.map-video-spinner');
+    var replay = overlay.querySelector('.map-video-replay');
+    var caption = overlay.querySelector('.map-video-caption');
+    var activeHls = null;
+
+    var HLS_RE = /\.m3u8(\?.*)?$/i;
+
+    function isHlsUrl(url) { return url && HLS_RE.test(url); }
+
+    function destroyHls() {
+      if (activeHls) {
+        activeHls.destroy();
+        activeHls = null;
+      }
+    }
+
+    function closeVideo() {
+      overlay.classList.remove('active');
+      video.pause();
+      destroyHls();
+      video.removeAttribute('src');
+      video.load();
+      spinner.classList.remove('hidden');
+      replay.style.display = 'none';
+    }
+
+    /* Hide spinner once first frame is ready */
+    video.addEventListener('loadeddata', function() {
+      spinner.classList.add('hidden');
+    });
+
+    /* Show replay button when video ends */
+    video.addEventListener('ended', function() {
+      replay.style.display = 'flex';
+    });
+
+    /* Hide replay on any play (including replay click) */
+    video.addEventListener('play', function() {
+      replay.style.display = 'none';
+    });
+
+    /* Replay click */
+    replay.addEventListener('click', function(e) {
+      e.stopPropagation();
+      video.currentTime = 0;
+      video.play();
+    });
+
+    /* Close on backdrop click */
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closeVideo();
+    });
+
+    /* Don't close when clicking video or its wrapper */
+    wrap.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+
+    /* Keyboard: Escape to close */
+    document.addEventListener('keydown', function(e) {
+      if (!overlay.classList.contains('active')) return;
+      if (e.key === 'Escape') closeVideo();
+    });
+
+    function tryAutoplay() {
+      var playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(function() { /* browser blocked autoplay — user can tap play */ });
+      }
+    }
+
+    /* Load hls.js on demand (once), then call back */
+    function loadHlsThen(callback) {
+      if (typeof Hls !== 'undefined') { callback(); return; }
+      var js = document.createElement('script');
+      js.src = 'https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js';
+      js.onload = callback;
+      document.head.appendChild(js);
+    }
+
+    function attachHls(url) {
+      destroyHls();
+      activeHls = new Hls();
+      activeHls.loadSource(url);
+      activeHls.attachMedia(video);
+      activeHls.on(Hls.Events.MANIFEST_PARSED, function() {
+        tryAutoplay();
+      });
+    }
+
+    window.__mapVideoPlayer = {
+      open: function(url, name) {
+        spinner.classList.remove('hidden');
+        replay.style.display = 'none';
+        caption.textContent = name || '';
+        overlay.classList.add('active');
+
+        if (isHlsUrl(url)) {
+          /* Safari handles HLS natively; everything else needs hls.js */
+          if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = url;
+            video.load();
+            tryAutoplay();
+          } else {
+            loadHlsThen(function() {
+              if (Hls.isSupported()) {
+                attachHls(url);
+              } else {
+                /* Last resort: try native (will fail gracefully) */
+                video.src = url;
+                video.load();
+                tryAutoplay();
+              }
+            });
+          }
+        } else {
+          video.src = url;
+          video.load();
+          tryAutoplay();
+        }
+      }
+    };
+  }
+
+}
+</script>

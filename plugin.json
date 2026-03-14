@@ -1,0 +1,6 @@
+{
+  "version": "1.0",
+  "title": "Maps",
+  "description": "Add interactive maps to any post with the map shortcode. Supports custom pins, legends, basemaps, clustering, lightbox, video, and audio.",
+  "fields": []
+}

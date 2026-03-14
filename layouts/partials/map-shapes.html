@@ -1,0 +1,232 @@
+<script>
+/* ── Shared icon shapes and basemap definitions (loaded once per page) ── */
+window.__mapShapes = {
+  pin: {
+    w: 25, h: 41, anchor: [12, 41], popup: [1, -34], shadow: true,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="25" height="41" viewBox="0 0 25 41">'
+        + '<path d="M12.5 0C5.6 0 0 5.6 0 12.5C0 21.9 12.5 41 12.5 41S25 21.9 25 12.5C25 5.6 19.4 0 12.5 0Z" fill="' + c + '"/>'
+        + '<circle cx="12.5" cy="12.5" r="5.5" fill="#fff"/></svg>';
+    }
+  },
+  star: {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="' + c + '"/></svg>';
+    }
+  },
+  heart: {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53L12 21.35z" fill="' + c + '"/></svg>';
+    }
+  },
+  point: {
+    w: 12, h: 12, anchor: [6, 6], popup: [0, -8], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">'
+        + '<circle cx="6" cy="6" r="6" fill="' + c + '"/></svg>';
+    }
+  },
+  'circle-check': {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+        + '<polyline points="7,12.5 10.5,16 17,8.5" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    }
+  },
+  'circle-x': {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+        + '<line x1="8" y1="8" x2="16" y2="16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>'
+        + '<line x1="16" y1="8" x2="8" y2="16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>';
+    }
+  },
+  'circle-heart': {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+        + '<g transform="translate(4.8,4.8) scale(0.6)">'
+        + '<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53L12 21.35z" fill="#fff"/>'
+        + '</g></svg>';
+    }
+  },
+  'circle-star': {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+        + '<g transform="translate(4.8,4.8) scale(0.6)">'
+        + '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#fff"/>'
+        + '</g></svg>';
+    }
+  },
+  'circle-dot': {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+        + '<circle cx="12" cy="12" r="4" fill="#fff"/></svg>';
+    }
+  },
+  camera: {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 640 640">'
+        + '<path d="M213.1 128.8L202.7 160L128 160C92.7 160 64 188.7 64 224L64 480C64 515.3 92.7 544 128 544L512 544C547.3 544 576 515.3 576 480L576 224C576 188.7 547.3 160 512 160L437.3 160L426.9 128.8C420.4 109.2 402.1 96 381.4 96L258.6 96C237.9 96 219.6 109.2 213.1 128.8zM320 256C373 256 416 299 416 352C416 405 373 448 320 448C267 448 224 405 224 352C224 299 267 256 320 256z" fill="' + c + '"/></svg>';
+    }
+  },
+  video: {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 640 640">'
+        + '<path d="M128 128C92.7 128 64 156.7 64 192L64 448C64 483.3 92.7 512 128 512L384 512C419.3 512 448 483.3 448 448L448 192C448 156.7 419.3 128 384 128L128 128zM496 400L569.5 458.8C573.7 462.2 578.9 464 584.3 464C597.4 464 608 453.4 608 440.3L608 199.7C608 186.6 597.4 176 584.3 176C578.9 176 573.7 177.8 569.5 181.2L496 240L496 400z" fill="' + c + '"/></svg>';
+    }
+  },
+  image: {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 640 640">'
+        + '<path d="M160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 160C544 124.7 515.3 96 480 96L160 96zM224 176C250.5 176 272 197.5 272 224C272 250.5 250.5 272 224 272C197.5 272 176 250.5 176 224C176 197.5 197.5 176 224 176zM368 288C376.4 288 384.1 292.4 388.5 299.5L476.5 443.5C481 450.9 481.2 460.2 477 467.8C472.8 475.4 464.7 480 456 480L184 480C175.1 480 166.8 475 162.7 467.1C158.6 459.2 159.2 449.6 164.3 442.3L220.3 362.3C224.8 355.9 232.1 352.1 240 352.1C247.9 352.1 255.2 355.9 259.7 362.3L286.1 400.1L347.5 299.6C351.9 292.5 359.6 288.1 368 288.1z" fill="' + c + '"/></svg>';
+    }
+  },
+  gallery: {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 640 640">'
+        + '<path d="M128 160C128 124.7 156.7 96 192 96L512 96C547.3 96 576 124.7 576 160L576 416C576 451.3 547.3 480 512 480L192 480C156.7 480 128 451.3 128 416L128 160zM56 192C69.3 192 80 202.7 80 216L80 512C80 520.8 87.2 528 96 528L456 528C469.3 528 480 538.7 480 552C480 565.3 469.3 576 456 576L96 576C60.7 576 32 547.3 32 512L32 216C32 202.7 42.7 192 56 192zM224 224C241.7 224 256 209.7 256 192C256 174.3 241.7 160 224 160C206.3 160 192 174.3 192 192C192 209.7 206.3 224 224 224zM420.5 235.5C416.1 228.4 408.4 224 400 224C391.6 224 383.9 228.4 379.5 235.5L323.2 327.6L298.7 297C294.1 291.3 287.3 288 280 288C272.7 288 265.8 291.3 261.3 297L197.3 377C191.5 384.2 190.4 394.1 194.4 402.4C198.4 410.7 206.8 416 216 416L488 416C496.7 416 504.7 411.3 508.9 403.7C513.1 396.1 513 386.9 508.4 379.4L420.4 235.4z" fill="' + c + '"/></svg>';
+    }
+  },
+  'pin-small': {
+    w: 16, h: 26, anchor: [8, 26], popup: [0, -22],
+    shadow: true, shadowSize: [26, 26], shadowAnchor: [8, 26],
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" viewBox="0 0 25 41">'
+        + '<path d="M12.5 0C5.6 0 0 5.6 0 12.5C0 21.9 12.5 41 12.5 41S25 21.9 25 12.5C25 5.6 19.4 0 12.5 0Z" fill="' + c + '"/>'
+        + '<circle cx="12.5" cy="12.5" r="5.5" fill="#fff"/></svg>';
+    }
+  },
+  'circle-new': {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+        + '<text x="12" y="12" text-anchor="middle" dominant-baseline="central" '
+        + 'font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="8" fill="#fff" '
+        + 'letter-spacing="0.5">NEW</text></svg>';
+    }
+  },
+  'circle-star-full': {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      var star = 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z';
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+        + '<g transform="translate(4.8,4.8) scale(0.6)">'
+        + '<path d="' + star + '" fill="#fff"/></g></svg>';
+    }
+  },
+  'circle-star-half': {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      var star = 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z';
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+        + '<g transform="translate(4.8,4.8) scale(0.6)">'
+        + '<defs><clipPath id="sh"><rect x="0" y="0" width="12" height="24"/></clipPath></defs>'
+        + '<path d="' + star + '" fill="#fff" clip-path="url(#sh)"/>'
+        + '<path d="' + star + '" fill="none" stroke="#fff" stroke-width="1.5"/>'
+        + '</g></svg>';
+    }
+  },
+  'circle-star-empty': {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      var star = 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z';
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+        + '<g transform="translate(4.8,4.8) scale(0.6)">'
+        + '<path d="' + star + '" fill="none" stroke="#fff" stroke-width="1.5"/>'
+        + '</g></svg>';
+    }
+  },
+  'circle-plus': {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+        + '<line x1="12" y1="6.5" x2="12" y2="17.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>'
+        + '<line x1="6.5" y1="12" x2="17.5" y2="12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>';
+    }
+  },
+  'circle-minus': {
+    w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+    svg: function(c) {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+        + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+        + '<line x1="6.5" y1="12" x2="17.5" y2="12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>';
+    }
+  }
+};
+/* Generate numbered circle badges */
+(function() {
+  var S = window.__mapShapes;
+  function addNum(key, label, fs) {
+    S[key] = {
+      w: 26, h: 26, anchor: [13, 13], popup: [0, -18], shadow: false,
+      svg: (function(n, f) {
+        return function(c) {
+          return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+            + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+            + '<text x="12" y="12" text-anchor="middle" dominant-baseline="central" '
+            + 'font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="' + f + '" fill="#fff">'
+            + n + '</text></svg>';
+        };
+      })(label, fs)
+    };
+  }
+  for (var i = 0; i <= 9; i++) { addNum('circle-' + i, String(i), '16'); }
+  for (var j = 0; j <= 99; j++) { var p = (j < 10 ? '0' : '') + j; addNum('circle-' + p, p, '13'); }
+  /* Circle-badge versions of FA icons — reuse path data from standalone shapes */
+  var faPaths = {
+    camera: S.camera, video: S.video, image: S.image, gallery: S.gallery
+  };
+  ['camera','video','image','gallery'].forEach(function(name) {
+    var standalone = faPaths[name];
+    S['circle-' + name] = {
+      w: 24, h: 24, anchor: [12, 12], popup: [0, -16], shadow: false,
+      svg: (function(pathFn) {
+        return function(c) {
+          /* Extract the path d attribute from the standalone SVG */
+          var full = pathFn('#fff');
+          var m = full.match(/d="([^"]+)"/);
+          var d = m ? m[1] : '';
+          return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">'
+            + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+            + '<g transform="translate(4,4) scale(0.025)"><path d="' + d + '" fill="#fff"/></g></svg>';
+        };
+      })(standalone.svg)
+    };
+  });
+})();
+window.__mapBasemaps = Object.assign(window.__mapBasemaps || {}, {
+  osm: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19, subdomains: 'abc' },
+  voyager: { url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20, subdomains: 'abcd' },
+  positron: { url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20, subdomains: 'abcd' },
+  topo: { url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, \u00a9 <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)', maxZoom: 17, subdomains: 'abc' },
+  cycle: { url: 'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases">CyclOSM</a> \u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 20, subdomains: 'abc' },
+  satellite: { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://www.esri.com/">Esri</a>', maxZoom: 19, subdomains: '' },
+  streets: { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://www.esri.com/">Esri</a>', maxZoom: 19, subdomains: '' },
+  'esri-topo': { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://www.esri.com/">Esri</a> \u2014 Esri, DeLorme, NAVTEQ', maxZoom: 19, subdomains: '' },
+  natgeo: { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://www.esri.com/">Esri</a> \u2014 National Geographic, Esri, DeLorme, NAVTEQ', maxZoom: 16, subdomains: '' },
+  'esri-relief': { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://www.esri.com/">Esri</a>', maxZoom: 13, subdomains: '' },
+  'usgs-topo': { url: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://usgs.gov/">USGS</a> \u2014 The National Map', maxZoom: 16, subdomains: '' },
+  'usgs-hybrid': { url: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://usgs.gov/">USGS</a> \u2014 The National Map', maxZoom: 16, subdomains: '' }
+});
+</script>

@@ -1,0 +1,437 @@
+{{/*
+  Maps for Micro.blog (Hugo Shortcode)
+  =====================================
+  Fully self-contained — works with ANY theme (mnml, Tiny, etc.)
+  No head partial, footer partial, or microhook needed.
+  Leaflet is loaded on demand and only once, even with multiple maps.
+  Includes CSS overrides for themes (like mnml) that interfere with
+  Leaflet marker/tile positioning.
+
+  Usage (positional):
+    {{< map "europe" >}}
+    {{< map "south-america" >}}
+
+  Usage (named — required when setting optional params):
+    {{< map data="europe" >}}
+    {{< map data="europe" height="700px" >}}
+    {{< map data="europe" color="#E11D48" >}}
+    {{< map data="europe" icon="circle-dot" >}}
+    {{< map data="europe" legend="europe-legend" >}}
+
+  Parameters:
+    data / positional 0    — (required) name of the YAML file in data/maps/
+    height                 — map container height (default: "500px")
+    color                  — default pin color (default: "#4682B4" SteelBlue)
+    icon                   — default icon shape (default: "pin")
+    basemap                — base map tile style (default: "osm")
+                             Options: osm, voyager, positron, topo, cycle, satellite, streets,
+                             esri-topo, esri-relief, natgeo, usgs-topo, usgs-hybrid
+                             Note: usgs-topo and usgs-hybrid cover the United States only.
+    legend                 — name of a legend YAML file in data/maps/ (optional)
+    cluster                — "yes" to group nearby pins into count bubbles (optional)
+
+  Data file fields (name, lat, lon required; url, color, icon, note optional):
+    - name: "Porto, Portugal"
+      lat: 41.1579
+      lon: -8.6291
+      url: "/categories/porto"
+      color: "Green"
+      icon: "circle-check"
+      note: "Three days exploring the Ribeira district."
+
+  Legend file format (label required; icon, color, url optional):
+    - label: "Visited"
+      icon: "circle-check"
+      color: "Green"
+      url: "#visited"
+    - label: "Wishlist"
+      icon: "pin"
+
+  Links in popups open in a new tab by default. If a url points to an
+  image file (.jpg, .png, .gif, .webp), clicking it opens a lightbox
+  overlay instead of navigating away. If a url points to a video file
+  (.mp4, .m4v, .mov, .webm, .ogv), clicking it opens a standalone video
+  player overlay with controls. HLS streams (.m3u8) are also supported —
+  Safari plays them natively; other browsers use hls.js, loaded on demand.
+  If a url points to an audio file
+  (.mp3, .m4a, .aac, .ogg, .oga, .wav, .flac), an inline audio player
+  is embedded directly in the popup below the pin name and note.
+
+  Available icons:
+    Standalone shapes:  pin (default), pin-small, star, heart, point, camera, video, image, gallery
+    Circle badges:      circle-check, circle-x, circle-heart, circle-star, circle-dot, circle-new,
+                        circle-star-full, circle-star-half, circle-star-empty, circle-plus, circle-minus,
+                        circle-camera, circle-video, circle-image, circle-gallery
+    Numbered circles:   circle-0 through circle-9, circle-00 through circle-99
+    Font Awesome:       Any "fa-" prefixed icon name (e.g., "fa-utensils", "fa-mug-hot").
+                        Uses Font Awesome Free Solid. The stylesheet and webfont are loaded
+                        on demand only when an fa- icon is used. FA icons are centered on
+                        the pin location (like emoji) and respect the color field.
+    Emoji / unicode:    Any other value is rendered as-is (e.g., "🏯", "🍕")
+*/}}
+
+{{/* ── Resolve the data source name ── */}}
+{{ $source := "" }}
+{{ if .IsNamedParams }}
+  {{ $source = .Get "data" }}
+{{ else }}
+  {{ $source = .Get 0 }}
+{{ end }}
+
+{{/* ── Optional parameters with defaults ── */}}
+{{ $height := "500px" }}
+{{ $color := "#4682B4" }}
+{{ $icon := "pin" }}
+{{ $basemap := "osm" }}
+{{ $legendSource := "" }}
+{{ $cluster := false }}
+{{ if .IsNamedParams }}
+  {{ with .Get "height" }}{{ $height = . }}{{ end }}
+  {{ with .Get "color" }}{{ $color = . }}{{ end }}
+  {{ with .Get "icon" }}{{ $icon = . }}{{ end }}
+  {{ with .Get "basemap" }}{{ $basemap = . }}{{ end }}
+  {{ with .Get "legend" }}{{ $legendSource = . }}{{ end }}
+  {{ if eq (.Get "cluster") "yes" }}{{ $cluster = true }}{{ end }}
+{{ end }}
+{{/* Ensure height has a CSS unit — append px if purely numeric */}}
+{{ if findRE `^\d+$` $height }}{{ $height = printf "%spx" $height }}{{ end }}
+
+{{/* ── Build a unique map ID using a per-page counter ── */}}
+{{ if not (.Page.Scratch.Get "mapCount") }}{{ .Page.Scratch.Set "mapCount" 0 }}{{ end }}
+{{ $mapN := .Page.Scratch.Get "mapCount" }}
+{{ .Page.Scratch.Set "mapCount" (add $mapN 1) }}
+{{ $mapID := printf "map-%s-%d" $source $mapN }}
+{{ $legendID := printf "legend-%s-%d" $source $mapN }}
+
+{{/* ── Look up the data files ── */}}
+{{ $locations := index .Site.Data "maps" $source }}
+{{ $legend := false }}
+{{ if $legendSource }}
+  {{ $legend = index .Site.Data "maps" $legendSource }}
+{{ end }}
+
+{{ if $locations }}
+
+{{ if not (.Page.Scratch.Get "mapCSS") }}
+  {{ .Page.Scratch.Set "mapCSS" true }}
+  {{ partialCached "map-styles.html" . }}
+{{ end }}
+
+{{ if not (.Page.Scratch.Get "lightboxCSS") }}
+  {{ .Page.Scratch.Set "lightboxCSS" true }}
+  {{ partialCached "map-media-styles.html" . }}
+{{ end }}
+
+{{ if not (.Page.Scratch.Get "mapJS") }}
+  {{ .Page.Scratch.Set "mapJS" true }}
+  {{ partialCached "map-shapes.html" . }}
+  {{ partialCached "map-media-helpers.html" . }}
+{{ end }}
+
+<p class="map-sr-only">[Interactive map — visit the original post to explore it.]</p>
+<div id="{{ $mapID }}" role="application" aria-label="Interactive map" style="position: relative; z-index: 0; width: 100%; height: {{ $height }} !important; border-radius: {{ if $legend }}12px 12px 0 0{{ else }}12px{{ end }}; margin: {{ if $legend }}30px 0 0{{ else }}30px 0{{ end }};"><noscript><div style="display:flex;align-items:center;justify-content:center;height:100%;background:#f0f0f0;border-radius:inherit;font-family:sans-serif;font-size:14px;color:#666;padding:20px;text-align:center;">This interactive map requires JavaScript to display.</div></noscript></div>
+{{ if $legend }}
+<div id="{{ $legendID }}" style="background: #f0f0f0; border-radius: 0 0 12px 12px; padding: 6px 16px; margin: 0 0 30px; display: flex; flex-wrap: wrap; gap: 16px; row-gap: 4px; align-items: center; font-family: sans-serif; font-size: 14px; color: #444;"></div>
+{{ end }}
+<script>
+(function() {
+  var MAP_ID = {{ $mapID | jsonify | safeJS }};
+  var LEGEND_ID = {{ $legendID | jsonify | safeJS }};
+  var DEFAULT_COLOR = {{ $color | jsonify | safeJS }};
+  var DEFAULT_ICON = {{ $icon | jsonify | safeJS }};
+  var BASEMAP = {{ $basemap | jsonify | safeJS }};
+  var CLUSTER = {{ $cluster | jsonify | safeJS }};
+
+  var locations = [
+    {{ range $locations }}
+    {
+      name: {{ .name | jsonify | safeJS }},
+      lat: {{ .lat }},
+      lon: {{ .lon }},
+      url: {{ with .url }}{{ . | jsonify | safeJS }}{{ else }}""{{ end }},
+      color: {{ with .color }}{{ . | jsonify | safeJS }}{{ else }}""{{ end }},
+      icon: {{ with .icon }}{{ . | jsonify | safeJS }}{{ else }}""{{ end }},
+      note: {{ with .note }}{{ . | jsonify | safeJS }}{{ else }}""{{ end }}
+    },
+    {{ end }}
+  ];
+
+  {{ if $legend }}
+  var legendItems = [
+    {{ range $legend }}
+    {
+      label: {{ .label | jsonify | safeJS }},
+      icon: {{ with .icon }}{{ . | jsonify | safeJS }}{{ else }}""{{ end }},
+      color: {{ with .color }}{{ . | jsonify | safeJS }}{{ else }}""{{ end }},
+      url: {{ with .url }}{{ . | jsonify | safeJS }}{{ else }}""{{ end }}
+    },
+    {{ end }}
+  ];
+  {{ else }}
+  var legendItems = [];
+  {{ end }}
+
+  /* ── Icon shape definitions (shared across all maps) ── */
+  var SHAPES = window.__mapShapes;
+
+  var iconCache = {};
+
+  function createIcon(shape, fillColor) {
+    var key = shape + '|' + fillColor;
+    if (iconCache[key]) return iconCache[key];
+    var def = SHAPES[shape];
+    var icon;
+    if (def) {
+      var opts = {
+        iconUrl: 'data:image/svg+xml;base64,' + btoa(def.svg(fillColor)),
+        iconSize: [def.w, def.h],
+        iconAnchor: def.anchor,
+        popupAnchor: def.popup
+      };
+      if (def.shadow) {
+        opts.shadowUrl = 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png';
+        opts.shadowSize = def.shadowSize || [41, 41];
+        opts.shadowAnchor = def.shadowAnchor || [12, 41];
+      }
+      icon = L.icon(opts);
+    } else if (/^icon-\d+/.test(shape)) {
+      /* Unrecognized Google My Maps icon ID — fall back to default */
+      return createIcon(DEFAULT_ICON, fillColor);
+    } else if (/^fa-/.test(shape)) {
+      /* Font Awesome icon — load FA stylesheet on first use */
+      loadFontAwesome();
+      icon = L.divIcon({
+        html: '<i class="fa-solid ' + shape + '" style="font-size:20px;color:' + fillColor + ';"></i>',
+        className: '',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -18]
+      });
+    } else {
+      /* Treat unrecognized icon values as emoji / unicode */
+      icon = L.divIcon({
+        html: '<span style="font-size:24px;line-height:1;">' + shape + '</span>',
+        className: '',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -18]
+      });
+    }
+    iconCache[key] = icon;
+    return icon;
+  }
+
+  /* ── Legend builder ── */
+
+  function buildLegend() {
+    if (!legendItems.length) return;
+    var el = document.getElementById(LEGEND_ID);
+    if (!el) return;
+    legendItems.forEach(function(item, idx) {
+      if (idx > 0) {
+        var sep = document.createElement('span');
+        sep.style.cssText = 'color:#ccc;font-size:8px;flex-shrink:0;';
+        sep.textContent = '\u25C6';
+        el.appendChild(sep);
+      }
+      var shape = item.icon || DEFAULT_ICON;
+      var color = item.color || DEFAULT_COLOR;
+      var entry = document.createElement('span');
+      entry.style.cssText = 'display:inline-flex;align-items:center;gap:6px;white-space:nowrap;';
+      var def = SHAPES[shape];
+      var iconHTML;
+      if (def) {
+        iconHTML = '<img src="data:image/svg+xml;base64,' + btoa(def.svg(color))
+          + '" width="18" height="18" style="vertical-align:middle;display:inline-block;" />';
+      } else if (/^icon-\d+/.test(shape)) {
+        /* Unrecognized Google icon ID — render default icon */
+        var fallback = SHAPES[DEFAULT_ICON];
+        iconHTML = '<img src="data:image/svg+xml;base64,' + btoa(fallback.svg(color))
+          + '" width="18" height="18" style="vertical-align:middle;display:inline-block;" />';
+      } else if (/^fa-/.test(shape)) {
+        loadFontAwesome();
+        iconHTML = '<i class="fa-solid ' + shape + '" style="font-size:18px;color:' + color + ';vertical-align:middle;"></i>';
+      } else {
+        iconHTML = '<span style="font-size:18px;line-height:1;vertical-align:middle;">' + shape + '</span>';
+      }
+      var labelHTML = item.url
+        ? '<a href="' + item.url + '" style="color:#444;text-decoration:underline;">' + item.label + '</a>'
+        : item.label;
+      entry.innerHTML = iconHTML + '<span>' + labelHTML + '</span>';
+      el.appendChild(entry);
+    });
+  }
+
+  function initMap() {
+    var container = document.getElementById(MAP_ID);
+    if (!container) return;
+
+    ensureLightbox();
+    ensureVideoPlayer();
+
+    /* Collect all image URLs for gallery browsing */
+    var imageGallery = [];
+    locations.forEach(function(loc) {
+      if (loc.url && isImageUrl(loc.url)) {
+        imageGallery.push({ url: loc.url, name: loc.name });
+      }
+    });
+
+    /* Intercept lightbox and video trigger clicks in popups */
+    container.addEventListener('click', function(e) {
+      var imgLink = e.target.closest('.map-lightbox-trigger');
+      if (imgLink) {
+        e.preventDefault();
+        var linkUrl = imgLink.getAttribute('href');
+        var idx = 0;
+        for (var i = 0; i < imageGallery.length; i++) {
+          if (imageGallery[i].url === linkUrl) { idx = i; break; }
+        }
+        window.__mapLightbox.open(imageGallery, idx);
+        return;
+      }
+      var vidLink = e.target.closest('.map-video-trigger');
+      if (vidLink) {
+        e.preventDefault();
+        window.__mapVideoPlayer.open(vidLink.getAttribute('href'), vidLink.getAttribute('data-name') || '');
+      }
+    });
+
+    var map = L.map(MAP_ID, { scrollWheelZoom: false, zoomSnap: 0, zoomDelta: 1 });
+
+    var BASEMAPS = window.__mapBasemaps;
+    var bm = BASEMAPS[BASEMAP] || BASEMAPS.osm;
+    L.tileLayer(bm.url, { attribution: bm.attribution, maxZoom: bm.maxZoom || 19, subdomains: bm.subdomains || '' }).addTo(map);
+
+    var bounds = [];
+    var clusterGroup = CLUSTER && typeof L.markerClusterGroup === 'function'
+      ? L.markerClusterGroup({
+          iconCreateFunction: function(cluster) {
+            var count = cluster.getChildCount();
+            var size = count < 10 ? 34 : count < 100 ? 40 : 46;
+            return L.divIcon({
+              html: '<span>' + count + '</span>',
+              className: 'map-cluster',
+              iconSize: [size, size]
+            });
+          },
+          maxClusterRadius: 45,
+          zoomToBoundsOnClick: false,
+          spiderfyOnMaxZoom: true,
+          showCoverageOnHover: false
+        })
+      : null;
+
+    if (clusterGroup) {
+      clusterGroup.on('clusterclick', function(e) {
+        e.layer.zoomToBounds({ padding: [50, 50] });
+      });
+    }
+
+    locations.forEach(function(loc) {
+      var lat = parseFloat(loc.lat);
+      var lon = parseFloat(loc.lon);
+      if (isNaN(lat) || isNaN(lon)) return;
+      var pinColor = loc.color || DEFAULT_COLOR;
+      var shape = loc.icon || DEFAULT_ICON;
+      var icon = createIcon(shape, pinColor);
+      var marker = L.marker([lat, lon], { icon: icon, title: loc.name });
+      if (clusterGroup) {
+        clusterGroup.addLayer(marker);
+      } else {
+        marker.addTo(map);
+      }
+      var nameHTML;
+      if (loc.url && isImageUrl(loc.url)) {
+        nameHTML = '<h3 style="margin: 0; font-size: 16px;"><a href="' + loc.url + '" class="map-lightbox-trigger" style="color: #007bff;">' + loc.name + '</a></h3>';
+      } else if (loc.url && isVideoUrl(loc.url)) {
+        nameHTML = '<h3 style="margin: 0; font-size: 16px;"><a href="' + loc.url + '" class="map-video-trigger" data-name="' + loc.name.replace(/"/g, '&quot;') + '" style="color: #007bff;">' + loc.name + '</a></h3>';
+      } else if (loc.url && isAudioUrl(loc.url)) {
+        nameHTML = '<h3 style="margin: 0; font-size: 16px;">' + loc.name + '</h3>';
+      } else if (loc.url) {
+        nameHTML = '<h3 style="margin: 0; font-size: 16px;"><a href="' + loc.url + '" target="_blank" rel="noopener" style="color: #007bff;">' + loc.name + '</a></h3>';
+      } else {
+        nameHTML = '<h3 style="margin: 0; font-size: 16px;">' + loc.name + '</h3>';
+      }
+      var audioHTML = '';
+      if (loc.url && isAudioUrl(loc.url)) {
+        audioHTML = '<div class="map-audio-player"><audio controls controlsList="nodownload" preload="metadata" src="' + loc.url + '"></audio></div>';
+      }
+      var popupContent = '<div style="font-family: sans-serif; padding: 5px;">'
+        + nameHTML
+        + (loc.note
+          ? '<p class="map-popup-note" style="margin: 6px 0 0; font-size: 14px;">' + loc.note + '</p>'
+          : '')
+        + audioHTML
+        + '</div>';
+      marker.bindPopup(popupContent, { autoPanPaddingTopLeft: [50, 10] });
+      bounds.push([lat, lon]);
+    });
+
+    if (clusterGroup) map.addLayer(clusterGroup);
+
+    if (bounds.length > 0) {
+      map.fitBounds(bounds, { padding: [40, 50] });
+    }
+
+    buildLegend();
+  }
+
+  /*
+   * Leaflet loader with queue — handles multiple maps on one page.
+   * First map triggers the load; others queue up until it is ready.
+   * If any map uses cluster="yes", markercluster is loaded after Leaflet.
+   */
+  if (CLUSTER) window.__mapNeedsCluster = true;
+
+  function runQueue() {
+    window.__leafletQueue.forEach(function(fn) { try { fn(); } catch(e) { console.error('Map init error:', e); } });
+    window.__leafletQueue = [];
+    window.__leafletLoading = false;
+  }
+
+  function loadClusterThen(callback) {
+    if (typeof L.markerClusterGroup === 'function') { callback(); return; }
+    var css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css';
+    document.head.appendChild(css);
+    var js = document.createElement('script');
+    js.src = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js';
+    js.onload = callback;
+    document.head.appendChild(js);
+  }
+
+  if (typeof L !== 'undefined') {
+    if (CLUSTER && typeof L.markerClusterGroup !== 'function') {
+      loadClusterThen(initMap);
+    } else {
+      initMap();
+    }
+  } else if (window.__leafletLoading) {
+    window.__leafletQueue.push(initMap);
+  } else {
+    window.__leafletLoading = true;
+    window.__leafletQueue = [initMap];
+
+    var css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(css);
+
+    var js = document.createElement('script');
+    js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    js.onload = function() {
+      if (window.__mapNeedsCluster) {
+        loadClusterThen(runQueue);
+      } else {
+        runQueue();
+      }
+    };
+    document.head.appendChild(js);
+  }
+})();
+</script>
+{{ else }}
+<!-- map shortcode: No data file found at data/maps/{{ $source }}.yml -->
+{{ end }}

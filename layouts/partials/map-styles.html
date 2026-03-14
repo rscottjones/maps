@@ -1,0 +1,109 @@
+<style>
+  /* Fix Leaflet markers — override theme styles (mnml, etc.)
+     that apply max-width, border-radius, or margins to img tags
+     inside article elements, which shifts pins and tiles. */
+  article .leaflet-container img,
+  .leaflet-container img {
+    max-width: none !important;
+    width: auto !important;
+    border-radius: 0 !important;
+    display: block !important;
+  }
+  article .leaflet-marker-icon,
+  article .leaflet-marker-shadow,
+  .leaflet-marker-icon,
+  .leaflet-marker-shadow {
+    max-width: none !important;
+  }
+  article .leaflet-tile,
+  .leaflet-tile {
+    margin: 0 !important;
+    max-width: none !important;
+  }
+  /* Popup note text */
+  .map-popup-note { color: #444; }
+
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    .map-popup-note { color: #bbb; }
+    .leaflet-container {
+      background: #1a1a2e !important;
+    }
+    .leaflet-popup-content-wrapper {
+      background: #2a2a3e !important;
+      color: #e0e0e0 !important;
+    }
+    .leaflet-popup-tip {
+      background: #2a2a3e !important;
+    }
+    .leaflet-popup-close-button {
+      color: #aaa !important;
+    }
+    .leaflet-popup-close-button:hover {
+      color: #fff !important;
+    }
+    .leaflet-popup-content h3 {
+      color: #e0e0e0 !important;
+    }
+    .leaflet-popup-content a {
+      color: #6cb4ee !important;
+    }
+    .leaflet-popup-content p {
+      color: #b0b0b0 !important;
+    }
+    [id^="legend-"] {
+      background: #2a2a3e !important;
+      color: #ccc !important;
+    }
+    [id^="legend-"] a {
+      color: #6cb4ee !important;
+    }
+    .leaflet-control-zoom a {
+      background: #2a2a3e !important;
+      color: #ccc !important;
+      border-color: #444 !important;
+    }
+    .leaflet-control-zoom a:hover {
+      background: #3a3a4e !important;
+    }
+    .leaflet-control-attribution {
+      background: rgba(42,42,62,0.8) !important;
+      color: #888 !important;
+    }
+    .leaflet-control-attribution a {
+      color: #6cb4ee !important;
+    }
+    [id^="map-"] > noscript div {
+      background: #2a2a3e !important;
+      color: #999 !important;
+    }
+  }
+  /* Visually hidden — visible in RSS readers that strip CSS */
+  .map-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+  }
+  /* Cluster bubbles */
+  .map-cluster {
+    background: rgba(70, 130, 180, 0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .map-cluster span {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: #fff;
+    font-size: 13px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .map-cluster {
+      background: rgba(108, 180, 238, 0.7);
+    }
+  }
+</style>
