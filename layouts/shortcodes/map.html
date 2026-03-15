@@ -172,55 +172,6 @@
   {{ end }}
 
   /* ── Icon shape definitions (shared across all maps) ── */
-  var SHAPES = window.__mapShapes;
-
-  var iconCache = {};
-
-  function createIcon(shape, fillColor) {
-    var key = shape + '|' + fillColor;
-    if (iconCache[key]) return iconCache[key];
-    var def = SHAPES[shape];
-    var icon;
-    if (def) {
-      var opts = {
-        iconUrl: 'data:image/svg+xml;base64,' + btoa(def.svg(fillColor)),
-        iconSize: [def.w, def.h],
-        iconAnchor: def.anchor,
-        popupAnchor: def.popup
-      };
-      if (def.shadow) {
-        opts.shadowUrl = 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png';
-        opts.shadowSize = def.shadowSize || [41, 41];
-        opts.shadowAnchor = def.shadowAnchor || [12, 41];
-      }
-      icon = L.icon(opts);
-    } else if (/^icon-\d+/.test(shape)) {
-      /* Unrecognized Google My Maps icon ID — fall back to default */
-      return createIcon(DEFAULT_ICON, fillColor);
-    } else if (/^fa-/.test(shape)) {
-      /* Font Awesome icon — load FA stylesheet on first use */
-      loadFontAwesome();
-      icon = L.divIcon({
-        html: '<i class="fa-solid ' + shape + '" style="font-size:20px;color:' + fillColor + ';"></i>',
-        className: '',
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-        popupAnchor: [0, -18]
-      });
-    } else {
-      /* Treat unrecognized icon values as emoji / unicode */
-      icon = L.divIcon({
-        html: '<span style="font-size:24px;line-height:1;">' + shape + '</span>',
-        className: '',
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-        popupAnchor: [0, -18]
-      });
-    }
-    iconCache[key] = icon;
-    return icon;
-  }
-
   /* ── Legend builder ── */
 
   function buildLegend() {
@@ -238,18 +189,19 @@
       var color = item.color || DEFAULT_COLOR;
       var entry = document.createElement('span');
       entry.style.cssText = 'display:inline-flex;align-items:center;gap:6px;white-space:nowrap;';
-      var def = SHAPES[shape];
+      var def = (window.__mapShapes || {})[shape];
       var iconHTML;
       if (def) {
         iconHTML = '<img src="data:image/svg+xml;base64,' + btoa(def.svg(color))
           + '" width="18" height="18" style="vertical-align:middle;display:inline-block;" />';
-      } else if (/^icon-\d+/.test(shape)) {
-        /* Unrecognized Google icon ID — render default icon */
-        var fallback = SHAPES[DEFAULT_ICON];
-        iconHTML = '<img src="data:image/svg+xml;base64,' + btoa(fallback.svg(color))
-          + '" width="18" height="18" style="vertical-align:middle;display:inline-block;" />';
       } else if (/^fa-/.test(shape)) {
-        loadFontAwesome();
+        if (!window.__faLoaded) {
+          window.__faLoaded = true;
+          var faCSS = document.createElement('link');
+          faCSS.rel = 'stylesheet';
+          faCSS.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
+          document.head.appendChild(faCSS);
+        }
         iconHTML = '<i class="fa-solid ' + shape + '" style="font-size:18px;color:' + color + ';vertical-align:middle;"></i>';
       } else {
         iconHTML = '<span style="font-size:18px;line-height:1;vertical-align:middle;">' + shape + '</span>';
@@ -269,11 +221,13 @@
     ensureLightbox();
     ensureVideoPlayer();
 
-    /* Collect all image URLs for gallery browsing */
+    /* Collect single-image URLs for global gallery browsing */
     var imageGallery = [];
     locations.forEach(function(loc) {
-      if (loc.url && isImageUrl(loc.url)) {
-        imageGallery.push({ url: loc.url, name: loc.name });
+      if (!loc.url) return;
+      var urls = loc.url.split(',').map(function(u) { return u.trim(); }).filter(Boolean);
+      if (urls.length === 1 && isImageUrl(urls[0])) {
+        imageGallery.push({ url: urls[0], name: loc.name });
       }
     });
 
@@ -282,6 +236,13 @@
       var imgLink = e.target.closest('.map-lightbox-trigger');
       if (imgLink) {
         e.preventDefault();
+        /* Per-pin gallery (comma-separated images) */
+        var customGallery = imgLink.getAttribute('data-gallery');
+        if (customGallery) {
+          try { window.__mapLightbox.open(JSON.parse(customGallery), 0); } catch(ex) {}
+          return;
+        }
+        /* Global gallery */
         var linkUrl = imgLink.getAttribute('href');
         var idx = 0;
         for (var i = 0; i < imageGallery.length; i++) {
@@ -334,28 +295,39 @@
       if (isNaN(lat) || isNaN(lon)) return;
       var pinColor = loc.color || DEFAULT_COLOR;
       var shape = loc.icon || DEFAULT_ICON;
-      var icon = createIcon(shape, pinColor);
+      var icon = window.__createIcon(shape, pinColor);
       var marker = L.marker([lat, lon], { icon: icon, title: loc.name });
       if (clusterGroup) {
         clusterGroup.addLayer(marker);
       } else {
         marker.addTo(map);
       }
+
+      /* Parse URL — check for comma-separated image gallery */
+      var urls = loc.url ? loc.url.split(',').map(function(u) { return u.trim(); }).filter(Boolean) : [];
+      var allImages = urls.length > 1 && urls.every(function(u) { return isImageUrl(u); });
+      var effectiveUrl = urls[0] || '';
       var nameHTML;
-      if (loc.url && isImageUrl(loc.url)) {
-        nameHTML = '<h3 style="margin: 0; font-size: 16px;"><a href="' + loc.url + '" class="map-lightbox-trigger" style="color: #007bff;">' + loc.name + '</a></h3>';
-      } else if (loc.url && isVideoUrl(loc.url)) {
-        nameHTML = '<h3 style="margin: 0; font-size: 16px;"><a href="' + loc.url + '" class="map-video-trigger" data-name="' + loc.name.replace(/"/g, '&quot;') + '" style="color: #007bff;">' + loc.name + '</a></h3>';
-      } else if (loc.url && isAudioUrl(loc.url)) {
+
+      if (allImages) {
+        /* Multi-image gallery */
+        var gal = urls.map(function(u) { return {url:u, name:loc.name}; });
+        var galJson = JSON.stringify(gal).replace(/'/g,'&#39;');
+        nameHTML = '<h3 style="margin: 0; font-size: 16px;"><a href="' + effectiveUrl + '" class="map-lightbox-trigger" data-gallery=\'' + galJson + '\' style="color: #007bff;">' + loc.name + '</a></h3>';
+      } else if (effectiveUrl && isImageUrl(effectiveUrl)) {
+        nameHTML = '<h3 style="margin: 0; font-size: 16px;"><a href="' + effectiveUrl + '" class="map-lightbox-trigger" style="color: #007bff;">' + loc.name + '</a></h3>';
+      } else if (effectiveUrl && isVideoUrl(effectiveUrl)) {
+        nameHTML = '<h3 style="margin: 0; font-size: 16px;"><a href="' + effectiveUrl + '" class="map-video-trigger" data-name="' + loc.name.replace(/"/g, '&quot;') + '" style="color: #007bff;">' + loc.name + '</a></h3>';
+      } else if (effectiveUrl && isAudioUrl(effectiveUrl)) {
         nameHTML = '<h3 style="margin: 0; font-size: 16px;">' + loc.name + '</h3>';
-      } else if (loc.url) {
-        nameHTML = '<h3 style="margin: 0; font-size: 16px;"><a href="' + loc.url + '" target="_blank" rel="noopener" style="color: #007bff;">' + loc.name + '</a></h3>';
+      } else if (effectiveUrl) {
+        nameHTML = '<h3 style="margin: 0; font-size: 16px;"><a href="' + effectiveUrl + '" target="_blank" rel="noopener" style="color: #007bff;">' + loc.name + '</a></h3>';
       } else {
         nameHTML = '<h3 style="margin: 0; font-size: 16px;">' + loc.name + '</h3>';
       }
       var audioHTML = '';
-      if (loc.url && isAudioUrl(loc.url)) {
-        audioHTML = '<div class="map-audio-player"><audio controls controlsList="nodownload" preload="metadata" src="' + loc.url + '"></audio></div>';
+      if (effectiveUrl && isAudioUrl(effectiveUrl)) {
+        audioHTML = '<div class="map-audio-player"><audio controls controlsList="nodownload" preload="metadata" src="' + effectiveUrl + '"></audio></div>';
       }
       var popupContent = '<div style="font-family: sans-serif; padding: 5px;">'
         + nameHTML
