@@ -1,5 +1,19 @@
+{{/*
+  geo-media-styles-v1.html — shared overlay CSS
+  =============================================
+  Copied BYTE-IDENTICALLY into every sibling plugin's layouts/partials/.
+  Versioned in the file name for the same reason as geo-core-v1.html.
+
+  Styles the three shared DOM things: the lightbox overlay, the video
+  overlay, and the inline audio player. These classes stay UNPREFIXED:
+  they belong to the shared overlays, not to any one plugin.
+
+  Emitted once per page behind the "geoMediaCSS-v1" Scratch key.
+  No !important in this file.
+*/}}
+
 <style>
-  /* Lightbox overlay (shared with routes plugin) */
+  /* Lightbox overlay */
   .map-lightbox {
     display: none;
     position: fixed;

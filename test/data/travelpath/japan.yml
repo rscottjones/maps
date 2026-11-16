@@ -1,0 +1,7 @@
+title: "Japan 2023"
+description: "Two weeks."
+line-style: "great-circle chevron"
+line-color: "#7C3AED"
+basemap: "positron"
+cluster: yes
+icon: "disc"

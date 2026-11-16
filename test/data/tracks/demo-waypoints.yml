@@ -1,0 +1,12 @@
+- name: "Refugio Grey"
+  lat: -50.9876
+  lon: -73.1234
+  icon: "⛺"
+  color: "SteelBlue"
+  url: "/photos/refugio.jpg"
+  note: "Night 1."
+- name: "Glacier viewpoint"
+  lat: -50.9912
+  lon: -73.1456
+  icon: "binoculars"
+  url: "/media/glacier.mp4"
