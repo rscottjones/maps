@@ -354,8 +354,6 @@
    * First map triggers the load; others queue up until it is ready.
    * If any map uses cluster="yes", markercluster is loaded after Leaflet.
    */
-  if (CLUSTER) window.__mapNeedsCluster = true;
-
   function runQueue() {
     window.__leafletQueue.forEach(function(fn) { try { fn(); } catch(e) { console.error('Map init error:', e); } });
     window.__leafletQueue = [];
@@ -374,17 +372,25 @@
     document.head.appendChild(js);
   }
 
-  if (typeof L !== 'undefined') {
+  /* This map's own dependency chain: Leaflet -> (cluster?) -> initMap.
+     Queued as one unit, so it works no matter which plugin's loader
+     actually fetched Leaflet. */
+  function start() {
     if (CLUSTER && typeof L.markerClusterGroup !== 'function') {
       loadClusterThen(initMap);
     } else {
       initMap();
     }
+  }
+
+  if (typeof L !== 'undefined') {
+    start();
   } else if (window.__leafletLoading) {
-    window.__leafletQueue.push(initMap);
+    window.__leafletQueue = window.__leafletQueue || [];
+    window.__leafletQueue.push(start);
   } else {
     window.__leafletLoading = true;
-    window.__leafletQueue = [initMap];
+    window.__leafletQueue = [start];
 
     var css = document.createElement('link');
     css.rel = 'stylesheet';
@@ -393,13 +399,7 @@
 
     var js = document.createElement('script');
     js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-    js.onload = function() {
-      if (window.__mapNeedsCluster) {
-        loadClusterThen(runQueue);
-      } else {
-        runQueue();
-      }
-    };
+    js.onload = runQueue;   /* bare drain, identical in all three plugins */
     document.head.appendChild(js);
   }
 })();
