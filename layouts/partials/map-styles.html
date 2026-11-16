@@ -56,7 +56,11 @@
     font-size: 8px;
     flex-shrink: 0;
   }
-  .mb-map-legend a {
+  /* Three selectors, and the extra class, so theme rules such as
+     ".post a:visited" cannot recolour legend links. */
+  .mb-map-legend .mb-map-legend-item a,
+  .mb-map-legend .mb-map-legend-item a:visited,
+  .mb-map-legend .mb-map-legend-item a:hover {
     color: #444;
     text-decoration: underline;
   }
@@ -85,7 +89,9 @@
       background: #2a2a3e;
       color: #ccc;
     }
-    .mb-map-legend a { color: #6cb4ee; }
+    .mb-map-legend .mb-map-legend-item a,
+    .mb-map-legend .mb-map-legend-item a:visited,
+    .mb-map-legend .mb-map-legend-item a:hover { color: #6cb4ee; }
     .mb-map-legend-sep { color: #444; }
     .mb-map-cluster { background: rgba(108, 180, 238, 0.7); }
   }

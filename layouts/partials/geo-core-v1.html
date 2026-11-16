@@ -787,6 +787,11 @@
   }
 
   function onMediaClick(e) {
+    /* An older sibling release wires its own listener on the map
+       container and calls preventDefault. If it already handled this
+       click, leave it alone rather than opening the overlay twice. */
+    if (e.defaultPrevented) return;
+
     var t = e.target;
     if (!t || !t.closest) return;   /* e.target can be a text node */
 
