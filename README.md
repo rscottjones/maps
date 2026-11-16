@@ -24,7 +24,7 @@ Create a data file at `data/maps/europe.yml`:
   lon: -8.6291
   url: "/categories/porto"
   color: "Green"
-  icon: "circle-check"
+  icon: "check"
   note: "Three days exploring the Ribeira district."
 ```
 
@@ -57,7 +57,7 @@ All parameters except `data` are optional.
 ```
 {{< map "europe" >}}
 {{< map "south-america" height="700px" >}}
-{{< map "trips" color="#E11D48" icon="circle-dot" >}}
+{{< map "trips" color="#E11D48" icon="dot" >}}
 {{< map "national-parks" basemap="topo" legend="parks-legend" >}}
 {{< map "cities" cluster="yes" >}}
 ```
@@ -103,7 +103,7 @@ Legend files live in the same `data/maps/` directory as map data files. Each ent
 
 ```yaml
 - label: "Visited"
-  icon: "circle-check"
+  icon: "check"
   color: "Green"
   url: "/categories/visited"
 
@@ -118,45 +118,23 @@ The legend bar is rendered directly below the map with a matching border radius.
 
 ## Icons
 
-### Standalone shapes
+Maps, Tracks and Travelpath draw from one icon set, defined in `geo-core-v1.html`. Any name below works anywhere an `icon:` field is accepted.
 
-These icons are centered on the pin location:
+| Category | Values |
+|---|---|
+| Pins | `pin`, `pin-small` |
+| Plain shapes | `point` (12 px), `circle` (20 px, white stroke), `disc` (26 px), `bullseye` (hollow ring) |
+| Status badges | `check`, `x`, `dot`, `plus`, `minus` |
+| Favourites | `heart`, `star`, `star-half`, `star-empty` |
+| Media | `camera`, `video`, `image`, `gallery` |
+| Places | `mountain`, `binoculars`, `landmark`, `utensils`, `droplet`, `microphone`, `flag`, `warning` |
+| Endpoints | `start`, `finish` (Tracks places these automatically) |
+| Labels | `icon-new` |
+| Numbered | `icon-0` … `icon-9` (large single digit), `icon-00` … `icon-99` (small two digit) |
+| Font Awesome | any `fa-` prefixed name, e.g. `fa-utensils`, `fa-mug-hot` |
+| Emoji | any other value, rendered as-is, e.g. `"🏯"`, `"⛺"` |
 
-| Name | Description |
-|------|-------------|
-| `pin` | Classic teardrop map pin with a white circle (default) |
-| `pin-small` | Smaller teardrop pin |
-| `star` | Five-pointed star |
-| `heart` | Heart |
-| `point` | Small filled circle |
-| `camera` | Camera |
-| `video` | Video camera |
-| `image` | Image/photo frame |
-| `gallery` | Stacked image frames |
-
-### Circle badges
-
-Filled circles with a symbol or icon inset in white:
-
-`circle-check`, `circle-x`, `circle-heart`, `circle-star`, `circle-dot`, `circle-new`, `circle-star-full`, `circle-star-half`, `circle-star-empty`, `circle-plus`, `circle-minus`, `circle-camera`, `circle-video`, `circle-image`, `circle-gallery`
-
-### Numbered circles
-
-`circle-0` through `circle-9` — single digits in a large font.
-
-`circle-00` through `circle-99` — two-digit numbers in a smaller font.
-
-### Font Awesome
-
-Any `fa-` prefixed name from [Font Awesome Free Solid](https://fontawesome.com/icons?s=solid&o=r) works as an icon value. The Font Awesome stylesheet and webfont are loaded on demand the first time an `fa-` icon appears on a page — they are never loaded on pages without one.
-
-```yaml
-- name: "Best coffee in town"
-  lat: 48.8566
-  lon: 2.3522
-  icon: "fa-mug-hot"
-  color: "#6F4E37"
-```
+Badges are a white glyph inside a filled circle, coloured by the marker's `color` field. `fa-` icons render a coloured glyph on a transparent background instead; the Font Awesome stylesheet loads only on pages that use one.
 
 ### Emoji and Unicode
 
@@ -221,17 +199,17 @@ This is visible in plain-text environments where CSS is stripped (such as many R
 
 ---
 
-## Tracks plugin compatibility
+## Using Maps with Tracks and Travelpath
 
-The Maps and Tracks plugins are designed to coexist on the same page. They share a set of `window.__` globals and Hugo `.Page.Scratch` keys to avoid emitting duplicate CSS or JavaScript. If both plugins are installed, the first one to render on a given page wins each resource, and the other skips it silently.
+The three plugins are designed to share a page. Each ships an identical copy of `geo-core-v1.html` (icons, basemaps, the library loader, the lightbox and video overlays) and `geo-media-styles-v1.html`. Whichever shortcode renders first emits them once; the others skip. Leaflet and every other library load once per page, whatever order the shortcodes appear in.
 
-The shared key is `"lightboxCSS"` — whichever plugin renders first emits the lightbox, video, and audio overlay CSS; the other detects it and skips.
+The version number is part of those file names on purpose: Micro.blog uses only one copy of a file when two plugins ship the same path, so a versioned name guarantees each plugin runs with the core it was released with.
 
 ---
 
 ## Theming notes
 
-The plugin ships with CSS overrides that correct common theme interference with Leaflet. In particular, themes like mnml apply `max-width`, `border-radius`, or `margin` to `img` tags inside `article` elements, which shifts pin icons and map tiles. These are neutralized with targeted `!important` rules scoped to `.leaflet-container`.
+The plugin ships with CSS overrides that correct common theme interference with Leaflet. In particular, themes like mnml apply `max-width`, `border-radius`, or `margin` to `img` tags inside `article` elements, which shifts pin icons and map tiles. These are neutralized with targeted `!important` rules scoped to `.leaflet-container`, which live in the shared core. The plugin's own classes are all prefixed `mb-map-`.
 
 ---
 
@@ -243,10 +221,10 @@ layouts/
   shortcodes/
     map.html                ← shortcode: parameter resolution, Scratch guards, per-map script
   partials/
-    map-styles.html         ← Leaflet fix CSS, dark mode, cluster bubble CSS
-    map-media-styles.html   ← lightbox, video overlay, audio player CSS
-    map-shapes.html         ← window.__mapShapes (all SVG icons) + window.__mapBasemaps
-    map-media-helpers.html  ← isImageUrl/Video/Audio, loadFontAwesome, ensureLightbox, ensureVideoPlayer
+    map-styles.html           ← Maps-only CSS (container, legend, cluster bubbles)
+    geo-core-v1.html          ← shared with Tracks and Travelpath: icons, basemaps, loader, overlays
+    geo-media-styles-v1.html  ← shared: lightbox, video overlay, audio player CSS
+test/                         ← two reverse-order test posts and their data
 ```
 
-The four partials are called via `partialCached`, so Hugo evaluates each one once per build and reuses the result. CSS and JavaScript are emitted only on pages that contain at least one `{{< map >}}` shortcode.
+The three partials are called via `partialCached`, so Hugo evaluates each one once per build and reuses the result. CSS and JavaScript are emitted only on pages that contain at least one `{{< map >}}` shortcode.

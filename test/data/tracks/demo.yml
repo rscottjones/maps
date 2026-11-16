@@ -1,0 +1,8 @@
+gpx: "/uploads/demo.gpx"
+name: "W Trek — Day 1"
+note: "Grey Glacier to Paine Grande."
+color: "#E11D48"
+basemap: "topo"
+stats: yes
+elevation: yes
+waypoints: "demo-waypoints"

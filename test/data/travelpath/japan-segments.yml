@@ -1,0 +1,16 @@
+- label: "Phoenix"
+  airport: "PHX"
+  order: 1
+  legend: "Outbound"
+  url: "/photos/phx.jpg"
+- label: "Tokyo"
+  airport: "NRT"
+  order: 2
+  legend: "Outbound"
+  note: "Shinjuku."
+- label: "Osaka"
+  lat: 34.6937
+  lon: 135.5023
+  order: 3
+  legend: "Return"
+  icon: "check"

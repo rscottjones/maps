@@ -1,0 +1,866 @@
+{{/*
+  geo-core-v1.html — shared core for Maps / Tracks / Travelpath
+  =============================================================
+  This file is copied BYTE-IDENTICALLY into every sibling plugin's
+  layouts/partials/ directory. It is one file, copied — not several files
+  that happen to agree.
+
+  THE VERSION IS IN THE FILE NAME ON PURPOSE. Micro.blog stacks plugins
+  as layers, and when two layers hold a file at the same path only one
+  of them is used. An unversioned geo-core.html would therefore resolve
+  to whichever plugin happens to sit on top, so a plugin you updated
+  could end up running against an older sibling's stale copy. With the
+  version in the path, every plugin always gets the core it shipped with.
+
+  TO CHANGE THIS FILE:
+    1. copy it to geo-core-v<N+1>.html and delete the old one
+    2. set VERSION below to N+1
+    3. change the partial name and the Scratch key in the shortcode
+       ("geoCore-v<N+1>")
+    4. do the same in every sibling plugin when you next release it
+
+  Emitted once per page behind the "geoCore-v1" Scratch key:
+
+      {{ if not (.Page.Scratch.Get "geoCore-v1") }}
+        {{ .Page.Scratch.Set "geoCore-v1" true }}
+        {{ partialCached "geo-core-v1.html" . }}
+      {{ end }}
+
+  If two plugins at different core versions are on one page, both cores
+  are emitted and the VERSION guard below resolves it: newest wins,
+  regardless of the order the shortcodes appear in.
+
+  Contents
+    1. CSS  — Leaflet theme overrides, dark mode, sr-only, noscript panel
+    2. JS   — window.__geoCore:
+                version, shapes, basemaps, createIcon, iconImg,
+                loadOnce, ensureLeaflet, ensureCluster, loadFontAwesome,
+                ensureLightbox, ensureVideoPlayer, registerGallery,
+                isImageUrl / isVideoUrl / isAudioUrl
+              plus one delegated media-click listener for the whole page.
+*/}}
+
+<style>
+  /* Leaflet overrides — the ONE place !important is legitimate.
+     These defeat theme stylesheets (mnml, Tiny, ...) that apply
+     max-width / border-radius / margin to img inside article, which
+     shifts pins and tiles. No plugin stylesheet may use !important. */
+  article .leaflet-container img,
+  .leaflet-container img {
+    max-width: none !important;
+    width: auto !important;
+    border-radius: 0 !important;
+    display: block !important;
+  }
+  article .leaflet-marker-icon,
+  article .leaflet-marker-shadow,
+  .leaflet-marker-icon,
+  .leaflet-marker-shadow {
+    max-width: none !important;
+  }
+  article .leaflet-tile,
+  .leaflet-tile {
+    margin: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Visually hidden — still read by screen readers and by RSS readers
+     that strip CSS. */
+  .mb-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* <noscript> fallback panel inside a map container */
+  .mb-noscript {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: #f0f0f0;
+    border-radius: inherit;
+    font-family: sans-serif;
+    font-size: 14px;
+    color: #666;
+    padding: 20px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  /* Dark mode: Leaflet chrome */
+  @media (prefers-color-scheme: dark) {
+    .leaflet-container { background: #1a1a2e !important; }
+    .leaflet-popup-content-wrapper,
+    .leaflet-popup-tip {
+      background: #2a2a2a !important;
+      color: #ddd !important;
+      box-shadow: 0 3px 14px rgba(0,0,0,0.6);
+    }
+    .leaflet-popup-content h3 { color: #e0e0e0 !important; }
+    .leaflet-popup-content a  { color: #7eb8f7 !important; }
+    .leaflet-popup-close-button { color: #888 !important; }
+    .leaflet-popup-close-button:hover { color: #ccc !important; }
+    .leaflet-control-zoom a {
+      background: #2a2a2a !important;
+      color: #ccc !important;
+      border-color: #444 !important;
+    }
+    .leaflet-control-zoom a:hover { background: #3a3a3a !important; }
+    .leaflet-control-attribution {
+      background: rgba(42,42,42,0.8) !important;
+      color: #888 !important;
+    }
+    .leaflet-control-attribution a { color: #7eb8f7 !important; }
+    /* Desaturate tiles slightly so marker and line colours stay vivid */
+    .leaflet-tile { filter: brightness(0.85) saturate(0.8); }
+
+    .mb-noscript { background: #2a2a2a; color: #999; }
+  }
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  /* VERSION GUARD — newest wins, regardless of load order.
+     Must match the number in this file's name. */
+  var VERSION = 1;
+  if (window.__geoCore && window.__geoCore.version >= VERSION) return;
+
+  var CDN = {
+    leafletCSS: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+    leafletJS:  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+    shadow:     'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    clusterCSS: 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css',
+    clusterJS:  'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js',
+    hlsJS:      'https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js',
+    faCSS:      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'
+  };
+
+  /* ═══════════════════════════════════════════════════════════════
+     1. loadOnce — THE loader.
+
+     Replaces the hand-written check-flag / set-flag / queue / inject /
+     drain blocks that each plugin used to carry. Those copies disagreed
+     about what to do when Leaflet finished loading, so whichever plugin
+     won the race decided whether markercluster loaded for everybody.
+
+     Here a caller declares what it needs and chains dependencies from
+     its own callback. Nothing depends on another plugin's drain.
+
+       __geoCore.loadOnce('gpx', {
+         js:   'https://.../gpx.js',
+         test: function () { return typeof L !== 'undefined' && !!L.GPX; },
+         cb:   init
+       });
+
+     `test` is the global-existence check. It is consulted before
+     injecting (so an already-present library short-circuits) and again
+     after onload, because some CDN/browser combinations fire onload
+     before the script has finished evaluating.
+     ═══════════════════════════════════════════════════════════════ */
+  var loaded  = {};   /* id -> true once settled          */
+  var pending = {};   /* id -> [callback, ...] while loading */
+
+  var POLL_MS    = 25;
+  var POLL_LIMIT = 80;   /* about 2 s, then give up and drain anyway */
+
+  function drain(id) {
+    loaded[id] = true;
+    var queue = pending[id] || [];
+    delete pending[id];
+    for (var i = 0; i < queue.length; i++) {
+      try { queue[i](); }
+      catch (e) { console.error('geo-core: "' + id + '" callback failed:', e); }
+    }
+    if (id === 'leaflet') flushLegacyLeafletQueue();
+  }
+
+  function settle(id, test) {
+    if (typeof test !== 'function') { drain(id); return; }
+    var tries = 0;
+    (function poll() {
+      var ok = false;
+      try { ok = !!test(); } catch (e) { ok = false; }
+      if (ok || ++tries > POLL_LIMIT) { drain(id); return; }
+      setTimeout(poll, POLL_MS);
+    })();
+  }
+
+  function loadOnce(id, opts) {
+    opts = opts || {};
+    var cb = typeof opts.cb === 'function' ? opts.cb : function () {};
+
+    /* Already available, from any source */
+    if (typeof opts.test === 'function') {
+      var present = false;
+      try { present = !!opts.test(); } catch (e) { present = false; }
+      if (present) { loaded[id] = true; cb(); return; }
+    }
+    if (loaded[id]) { cb(); return; }
+    if (pending[id]) { pending[id].push(cb); return; }
+
+    pending[id] = [cb];
+
+    if (opts.css) {
+      var link = document.createElement('link');
+      link.rel  = 'stylesheet';
+      link.href = opts.css;
+      document.head.appendChild(link);
+    }
+
+    if (!opts.js) { drain(id); return; }
+
+    var script = document.createElement('script');
+    script.src     = opts.js;
+    script.onload  = function () { settle(id, opts.test); };
+    script.onerror = function () {
+      console.warn('geo-core: "' + id + '" failed to load from ' + opts.js);
+      drain(id);   /* callers degrade gracefully; never strand the queue */
+    };
+    document.head.appendChild(script);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Leaflet-queue interop.
+
+     Older releases of these plugins, and a second core at a different
+     version, coordinate through window.__leafletLoading and
+     window.__leafletQueue. Loading Leaflet twice breaks it, so the core
+     keeps honouring those two globals: when it injects Leaflet it raises
+     the flag, and when it drains it also runs anything queued there.
+     When someone else is already injecting, the core queues behind them
+     instead of injecting a second copy.
+     ═══════════════════════════════════════════════════════════════ */
+  function flushLegacyLeafletQueue() {
+    var q = window.__leafletQueue || [];
+    window.__leafletQueue   = [];
+    window.__leafletLoading = false;
+    for (var i = 0; i < q.length; i++) {
+      try { q[i](); }
+      catch (e) { console.error('geo-core: queued Leaflet callback failed:', e); }
+    }
+  }
+
+  function leafletPresent() { return typeof window.L !== 'undefined'; }
+
+  function ensureLeaflet(cb) {
+    cb = typeof cb === 'function' ? cb : function () {};
+    if (leafletPresent()) { cb(); return; }
+
+    /* Someone else got there first — ride their queue. */
+    if (window.__leafletLoading && !pending.leaflet && !loaded.leaflet) {
+      window.__leafletQueue = window.__leafletQueue || [];
+      window.__leafletQueue.push(cb);
+      return;
+    }
+
+    if (!pending.leaflet && !loaded.leaflet) {
+      window.__leafletLoading = true;
+      window.__leafletQueue   = window.__leafletQueue || [];
+    }
+
+    loadOnce('leaflet', {
+      css:  CDN.leafletCSS,
+      js:   CDN.leafletJS,
+      test: leafletPresent,
+      cb:   cb
+    });
+  }
+
+  /* markercluster is used by more than one plugin, so the core owns the
+     URLs — but it loads because a CALLER asked for it. */
+  function ensureCluster(cb) {
+    loadOnce('markercluster', {
+      css:  CDN.clusterCSS,
+      js:   CDN.clusterJS,
+      test: function () { return leafletPresent() && typeof window.L.markerClusterGroup === 'function'; },
+      cb:   cb
+    });
+  }
+
+  function loadFontAwesome() {
+    loadOnce('fontawesome', { css: CDN.faCSS });
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     2. Media type detection.
+     ═══════════════════════════════════════════════════════════════ */
+  var IMAGE_EXTS = /\.(jpe?g|png|gif|webp)(\?.*)?$/i;
+  var VIDEO_EXTS = /\.(mp4|m4v|mov|webm|ogv|m3u8)(\?.*)?$/i;
+  var AUDIO_EXTS = /\.(mp3|m4a|aac|ogg|oga|wav|flac)(\?.*)?$/i;
+  var HLS_EXT    = /\.m3u8(\?.*)?$/i;
+
+  function isImageUrl(url) { return !!url && IMAGE_EXTS.test(url); }
+  function isVideoUrl(url) { return !!url && VIDEO_EXTS.test(url); }
+  function isAudioUrl(url) { return !!url && AUDIO_EXTS.test(url); }
+
+  /* ═══════════════════════════════════════════════════════════════
+     3. Basemaps.
+     ═══════════════════════════════════════════════════════════════ */
+  var BASEMAPS = {
+    osm:           { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19, subdomains: 'abc' },
+    voyager:       { url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20, subdomains: 'abcd' },
+    positron:      { url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/">CARTO</a>', maxZoom: 20, subdomains: 'abcd' },
+    topo:          { url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, \u00a9 <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)', maxZoom: 17, subdomains: 'abc' },
+    cycle:         { url: 'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', attribution: '\u00a9 <a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases">CyclOSM</a> \u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 20, subdomains: 'abc' },
+    'usgs-topo':   { url: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles courtesy of the <a href="https://usgs.gov/">U.S. Geological Survey</a>', maxZoom: 16, subdomains: '' },
+    'usgs-hybrid': { url: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles courtesy of the <a href="https://usgs.gov/">U.S. Geological Survey</a>', maxZoom: 16, subdomains: '' },
+    satellite:     { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://www.esri.com/">Esri</a>', maxZoom: 19, subdomains: '' },
+    streets:       { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://www.esri.com/">Esri</a>', maxZoom: 19, subdomains: '' },
+    'esri-topo':   { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://www.esri.com/">Esri</a>', maxZoom: 19, subdomains: '' },
+    'esri-relief': { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://www.esri.com/">Esri</a>', maxZoom: 13, subdomains: '' },
+    natgeo:        { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles \u00a9 <a href="https://www.esri.com/">Esri</a>', maxZoom: 16, subdomains: '' }
+  };
+
+  /* ═══════════════════════════════════════════════════════════════
+     4. Icon set.
+
+     Every badge is a filled circle plus one white glyph. Each used to
+     hand-write the whole <svg>/<circle>/<g transform> wrapper, including
+     a hand-computed scale factor — which is how four badges shipped
+     referencing an undefined variable.
+
+     Now the wrapper is written once. A badge stores only what differs:
+
+       { d: '...', box: 512 }              square source viewBox
+       { d: '...', box: [384, 512] }       non-square source viewBox
+       { d: '...', box: 24, room: 14.4 }   smaller glyph inside the circle
+       { raw: '...' }                      not a single filled path
+
+     `box` is NOT optional: the table mixes source viewBoxes of 24, 384,
+     448, 512 and 576 units, and the renderer does the arithmetic.
+
+     Adding an icon is one line: paste a Font Awesome path, note its
+     viewBox.
+     ═══════════════════════════════════════════════════════════════ */
+  var BADGE_BOX  = 24;   /* the badge's own viewBox */
+  var BADGE_ROOM = 16;   /* default units of room for the glyph inside it */
+
+  var STAR = 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z';
+
+  var BADGES = {
+
+    /* ── Status ── */
+    check: { raw: '<polyline points="7,12.5 10.5,16 17,8.5" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' },
+    x:     { raw: '<line x1="8" y1="8" x2="16" y2="16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>'
+                + '<line x1="16" y1="8" x2="8" y2="16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>' },
+    plus:  { raw: '<line x1="12" y1="6.5" x2="12" y2="17.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>'
+                + '<line x1="6.5" y1="12" x2="17.5" y2="12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>' },
+    minus: { raw: '<line x1="6.5" y1="12" x2="17.5" y2="12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>' },
+
+    /* ── Favourites ──
+       heart and star are authored in a 24-unit box and have always been
+       drawn with 14.4 units of room rather than 16. */
+    heart: { box: 24, room: 14.4, d: 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53L12 21.35z' },
+    star:  { box: 24, room: 14.4, d: STAR },
+
+    'star-half':  { raw: '<g transform="translate(4.8,4.8) scale(0.6)">'
+                       + '<defs><clipPath id="mb-star-half-clip"><rect x="0" y="0" width="12" height="24"/></clipPath></defs>'
+                       + '<path d="' + STAR + '" fill="#fff" clip-path="url(#mb-star-half-clip)"/>'
+                       + '<path d="' + STAR + '" fill="none" stroke="#fff" stroke-width="1.5"/></g>' },
+    'star-empty': { raw: '<g transform="translate(4.8,4.8) scale(0.6)">'
+                       + '<path d="' + STAR + '" fill="none" stroke="#fff" stroke-width="1.5"/></g>' },
+
+    'icon-new': { raw: '<text x="12" y="12" text-anchor="middle" dominant-baseline="central" '
+                     + 'font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="8" fill="#fff" '
+                     + 'letter-spacing="0.5">NEW</text>' },
+
+    /* ── Media (Font Awesome 6 Free Solid paths) ── */
+    camera:  { box: 512,        d: 'M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z' },
+    video:   { box: [576, 512], d: 'M0 128C0 92.7 28.7 64 64 64H320c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128zM559.1 99.8c10.4 5.6 16.9 16.4 16.9 28.2V384c0 11.8-6.5 22.6-16.9 28.2s-23 5-32.9-1.6l-96-64L416 337.1V320 192 174.9l14.2-9.5 96-64c9.8-6.5 22.4-7.2 32.9-1.6z' },
+    image:   { box: 512,        d: 'M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM323.8 202.5c-4.5-6.6-11.9-10.5-19.8-10.5s-15.4 3.9-19.8 10.5l-87 127.6L170.7 297c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6h96 32H424c8.9 0 17.1-4.9 21.2-12.8s3.6-17.4-1.4-24.7l-120-176zM112 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z' },
+    gallery: { box: [576, 512], d: 'M160 32c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H160zM396 138.7l96 144c4.9 7.4 5.4 16.8 1.2 24.6S480.9 320 472 320H328 280 200c-9.2 0-17.6-5.3-21.6-13.6s-2.9-18.2 2.9-25.4l64-80c4.6-5.7 11.4-9 18.7-9s14.2 3.3 18.7 9l17.3 21.6 56-84C360.5 132 368 128 376 128s15.5 4 20 10.7zM192 128a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120V344c0 75.1 60.9 136 136 136H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H136c-48.6 0-88-39.4-88-88V120z' },
+
+    /* ── Places and activities ── */
+    mountain:   { box: 512,        d: 'M256.5 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5-7.2 12.1-20.3 19.5-34.3 19.5l-432 0c-14.1 0-27.1-7.4-34.3-19.5s-7.5-27.1-.8-39.5l216-400 2.9-4.6C231.7 6.2 243.6 0 256.5 0zM170.4 249.9l26.8 26.8c6.2 6.2 16.4 6.2 22.6 0l43.3-43.3c6-6 14.1-9.4 22.6-9.4l42.8 0-72.1-133.5-86.1 159.4z' },
+    binoculars: { box: 512,        d: 'M128 32l32 0c17.7 0 32 14.3 32 32l0 32-96 0 0-32c0-17.7 14.3-32 32-32zm64 96l0 320c0 17.7-14.3 32-32 32L32 480c-17.7 0-32-14.3-32-32l0-59.1c0-34.6 9.4-68.6 27.2-98.3 13.7-22.8 22.5-48.2 25.8-74.6L60.5 156c2-16 15.6-28 31.8-28l99.8 0zm227.8 0c16.1 0 29.8 12 31.8 28L459 216c3.3 26.4 12.1 51.8 25.8 74.6 17.8 29.7 27.2 63.7 27.2 98.3l0 59.1c0 17.7-14.3 32-32 32l-128 0c-17.7 0-32-14.3-32-32l0-320 99.8 0zM320 64c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 32-96 0 0-32zm-32 64l0 160-64 0 0-160 64 0z' },
+    landmark:   { box: 512,        d: 'M238.7 5.1c10.5-6.8 24.1-6.8 34.6 0l224 144c11.9 7.7 17.4 22.3 13.4 35.9s-16.5 23-30.7 23l-32 0 0 208 51.2 38.4c8.1 6 12.8 15.5 12.8 25.6 0 17.7-14.3 32-32 32L32 512c-17.7 0-32-14.3-32-32 0-10.1 4.7-19.6 12.8-25.6l51.2-38.4 0 0 0-208-32 0c-14.2 0-26.7-9.4-30.7-23s1.5-28.3 13.4-35.9l224-144zM336 208l0 208 64 0 0-208-64 0zM224 416l64 0 0-208-64 0 0 208zM112 208l0 208 64 0 0-208-64 0z' },
+    utensils:   { box: [448, 512], d: 'M63.9 14.4C63.1 6.2 56.2 0 48 0s-15.1 6.2-16 14.3L17.9 149.7c-1.3 6-1.9 12.1-1.9 18.2 0 45.9 35.1 83.6 80 87.7L96 480c0 17.7 14.3 32 32 32s32-14.3 32-32l0-224.4c44.9-4.1 80-41.8 80-87.7 0-6.1-.6-12.2-1.9-18.2L223.9 14.3C223.1 6.2 216.2 0 208 0s-15.1 6.2-15.9 14.4L178.5 149.9c-.6 5.7-5.4 10.1-11.1 10.1-5.8 0-10.6-4.4-11.2-10.2L143.9 14.6C143.2 6.3 136.3 0 128 0s-15.2 6.3-15.9 14.6L99.8 149.8c-.5 5.8-5.4 10.2-11.2 10.2-5.8 0-10.6-4.4-11.1-10.1L63.9 14.4zM448 0C432 0 320 32 320 176l0 112c0 35.3 28.7 64 64 64l32 0 0 128c0 17.7 14.3 32 32 32s32-14.3 32-32l0-448c0-17.7-14.3-32-32-32z' },
+    droplet:    { box: [384, 512], d: 'M192 512C86 512 0 426 0 320 0 228.8 130.2 45.9 166.6-3.5 172.5-11.5 181.8-16 191.8-16l.4 0c10 0 19.3 4.5 25.2 12.5 36.4 49.4 166.6 232.3 166.6 323.5 0 106-86 192-192 192zM112 312c0-13.3-10.7-24-24-24s-24 10.7-24 24c0 75.1 60.9 136 136 136 13.3 0 24-10.7 24-24s-10.7-24-24-24c-48.6 0-88-39.4-88-88z' },
+    microphone: { box: [384, 512], d: 'M192 0C139 0 96 43 96 96l0 128c0 53 43 96 96 96s96-43 96-96l0-128c0-53-43-96-96-96zM48 184c0-13.3-10.7-24-24-24S0 170.7 0 184l0 40c0 97.9 73.3 178.7 168 190.5l0 49.5-48 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-48 0 0-49.5c94.7-11.8 168-92.6 168-190.5l0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40c0 79.5-64.5 144-144 144S48 303.5 48 224l0-40z' },
+    flag:       { box: [448, 512], d: 'M32 0C49.7 0 64 14.3 64 32l0 16 69-17.2c38.1-9.5 78.3-5.1 113.5 12.5 46.3 23.2 100.8 23.2 147.1 0l9.6-4.8C423.8 28.1 448 43.1 448 66.1l0 279.7c0 13.3-8.3 25.3-20.8 30l-34.7 13c-46.2 17.3-97.6 14.6-141.7-7.4-37.9-19-81.4-23.7-122.5-13.4L64 384 64 480c0 17.7-14.3 32-32 32S0 497.7 0 480L0 32C0 14.3 14.3 0 32 0zM64 187.1l64-13.9 0 65.5-64 13.9 0 65.5 48.8-12.2c5.1-1.3 10.1-2.4 15.2-3.3l0-63.9 38.9-8.4c8.3-1.8 16.7-2.5 25.1-2.1l0-64c13.6 .4 27.2 2.6 40.4 6.4l23.6 6.9 0 66.7-41.7-12.3c-7.3-2.1-14.8-3.4-22.3-3.8l0 71.4c21.8 1.9 43.3 6.7 64 14.4l0-69.8 22.7 6.7c13.5 4 27.3 6.4 41.3 7.4l0-64.2c-7.8-.8-15.6-2.3-23.2-4.5l-40.8-12 0-62c-13-3.8-25.8-8.8-38.2-15-8.2-4.1-16.9-7-25.8-8.8l0 72.4c-13-.4-26 .8-38.7 3.6l-25.3 5.5 0-75.2-64 16 0 73.1zM320 335.7c16.8 1.5 33.9-.7 50-6.8l14-5.2 0-71.7-7.9 1.8c-18.4 4.3-37.3 5.7-56.1 4.5l0 77.4zm64-149.4l0-70.8c-20.9 6.1-42.4 9.1-64 9.1l0 69.4c13.9 1.4 28 .5 41.7-2.6l22.3-5.2z' },
+    warning:    { box: 512,        d: 'M256 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5S486.1 480 472 480L40 480c-14.1 0-27.2-7.4-34.4-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9 20.5-21 35.2-21zm0 352a32 32 0 1 0 0 64 32 32 0 1 0 0-64zm0-192c-18.2 0-32.7 15.5-31.4 33.7l7.4 104c.9 12.5 11.4 22.3 23.9 22.3 12.6 0 23-9.7 23.9-22.3l7.4-104c1.3-18.2-13.1-33.7-31.4-33.7z' }
+  };
+
+  /* The one badge wrapper. */
+  function badgeSVG(def, color) {
+    var inner;
+    if (def.raw) {
+      inner = def.raw;
+    } else {
+      var bw = def.box, bh = def.box;
+      if (Object.prototype.toString.call(def.box) === '[object Array]') {
+        bw = def.box[0]; bh = def.box[1];
+      }
+      var room = def.room || BADGE_ROOM;
+      var k    = room / bh;
+      var tx   = (BADGE_BOX - bw * k) / 2;
+      var ty   = (BADGE_BOX - bh * k) / 2;
+      inner = '<g transform="translate(' + tx + ',' + ty + ') scale(' + k + ')">'
+            + '<path d="' + def.d + '" fill="#fff"/></g>';
+    }
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 ' + BADGE_BOX + ' ' + BADGE_BOX + '">'
+         + '<circle cx="12" cy="12" r="12" fill="' + color + '"/>'
+         + inner + '</svg>';
+  }
+
+  /* Bespoke entries: pins, plain shapes and endpoint markers are not
+     circle-plus-glyph and should not be forced into badgeSVG. */
+  var PIN = 'M12.5 0C5.6 0 0 5.6 0 12.5C0 21.9 12.5 41 12.5 41S25 21.9 25 12.5C25 5.6 19.4 0 12.5 0Z';
+
+  var SHAPES = {
+
+    /* ── Pin markers ── */
+    pin: {
+      w: 25, h: 41, anchor: [12,41], popup: [1,-34], shadow: true,
+      svg: function (c) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="25" height="41" viewBox="0 0 25 41">'
+          + '<path d="' + PIN + '" fill="' + c + '"/>'
+          + '<circle cx="12.5" cy="12.5" r="5.5" fill="#fff"/></svg>';
+      }
+    },
+    'pin-small': {
+      w: 16, h: 26, anchor: [8,26], popup: [0,-22],
+      shadow: true, shadowSize: [26,26], shadowAnchor: [8,26],
+      svg: function (c) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" viewBox="0 0 25 41">'
+          + '<path d="' + PIN + '" fill="' + c + '"/>'
+          + '<circle cx="12.5" cy="12.5" r="5.5" fill="#fff"/></svg>';
+      }
+    },
+
+    /* ── Plain shapes — three deliberate sizes of round marker ── */
+    point: {
+      w: 12, h: 12, anchor: [6,6], popup: [0,-8], shadow: false,
+      svg: function (c) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">'
+          + '<circle cx="6" cy="6" r="6" fill="' + c + '"/></svg>';
+      }
+    },
+    circle: {
+      w: 20, h: 20, anchor: [10,10], popup: [0,-14], shadow: false,
+      svg: function (c) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">'
+          + '<circle cx="10" cy="10" r="9" fill="' + c + '" stroke="#fff" stroke-width="2"/></svg>';
+      }
+    },
+    disc: {
+      w: 26, h: 26, anchor: [13,13], popup: [0,-18], shadow: false,
+      svg: function (c) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 512 512">'
+          + '<path d="M0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0z" fill="' + c + '"/></svg>';
+      }
+    },
+    /* bullseye is a hollow RING: the basemap shows through the centre.
+       `dot` looks similar but is opaque with a WHITE centre dot. */
+    bullseye: {
+      w: 26, h: 26, anchor: [13,13], popup: [0,-18], shadow: false,
+      svg: function (c) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 512 512">'
+          + '<path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm0-352a96 96 0 1 1 0 192 96 96 0 1 1 0-192z" fill="' + c + '"/></svg>';
+      }
+    },
+    dot: {
+      w: 26, h: 26, anchor: [13,13], popup: [0,-18], shadow: false,
+      svg: function (c) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+          + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+          + '<circle cx="12" cy="12" r="4" fill="#fff"/></svg>';
+      }
+    },
+
+    /* ── Endpoint markers (used by Tracks) ── */
+    start: {
+      w: 14, h: 14, anchor: [7,7], popup: [0,-10], shadow: false,
+      svg: function (c) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">'
+          + '<circle cx="7" cy="7" r="6" fill="' + c + '" stroke="#fff" stroke-width="2"/></svg>';
+      }
+    },
+    finish: {
+      w: 14, h: 14, anchor: [7,7], popup: [0,-10], shadow: false,
+      svg: function (c) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">'
+          + '<rect x="1" y="1" width="12" height="12" fill="' + c + '" stroke="#fff" stroke-width="2"/></svg>';
+      }
+    }
+  };
+
+  /* Badges, from the data table */
+  (function () {
+    function mount(name, def) {
+      SHAPES[name] = {
+        w: 26, h: 26, anchor: [13,13], popup: [0,-18], shadow: false,
+        svg: function (c) { return badgeSVG(def, c); }
+      };
+    }
+    for (var name in BADGES) {
+      if (Object.prototype.hasOwnProperty.call(BADGES, name)) mount(name, BADGES[name]);
+    }
+  })();
+
+  /* Numbered badges: icon-0..9 (large single digit),
+     icon-00..09 and icon-10..99 (small two digit). */
+  (function () {
+    function addNum(key, label, fontSize) {
+      SHAPES[key] = {
+        w: 26, h: 26, anchor: [13,13], popup: [0,-18], shadow: false,
+        svg: function (c) {
+          return '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">'
+            + '<circle cx="12" cy="12" r="12" fill="' + c + '"/>'
+            + '<text x="12" y="12" text-anchor="middle" dominant-baseline="central" '
+            + 'font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="' + fontSize + '" fill="#fff">'
+            + label + '</text></svg>';
+        }
+      };
+    }
+    for (var i = 0; i <= 9; i++)   { addNum('icon-' + i,   String(i),  '16'); }
+    for (var j = 0; j <= 9; j++)   { addNum('icon-0' + j,  '0' + j,    '13'); }
+    for (var k = 10; k <= 99; k++) { addNum('icon-' + k,   String(k),  '13'); }
+  })();
+
+  /* ═══════════════════════════════════════════════════════════════
+     5. createIcon.
+
+     Resolution order: named shape -> fa-* glyph -> emoji / literal text.
+     `fa-*` renders a coloured glyph on a transparent background, the
+     deliberate alternative to the badge style. First use pulls the Font
+     Awesome stylesheet and webfont.
+     ═══════════════════════════════════════════════════════════════ */
+  function createIcon(iconName, color) {
+    var L    = window.L;
+    var name = String(iconName || 'circle');
+    var col  = color || '#3b82f6';
+    var def  = SHAPES[name];
+
+    if (def && typeof def.svg === 'function') {
+      var opts = {
+        iconUrl:     'data:image/svg+xml;base64,' + btoa(def.svg(col)),
+        iconSize:    [def.w, def.h],
+        iconAnchor:  def.anchor,
+        popupAnchor: def.popup || [0,-18]
+      };
+      if (def.shadow) {
+        opts.shadowUrl    = CDN.shadow;
+        opts.shadowSize   = def.shadowSize   || [41,41];
+        opts.shadowAnchor = def.shadowAnchor || [12,41];
+      }
+      return L.icon(opts);
+    }
+
+    if (name.indexOf('fa-') === 0) {
+      loadFontAwesome();
+      return L.divIcon({
+        html: '<i class="fa-solid ' + name + '" style="font-size:20px;color:' + col + ';"></i>',
+        className: '', iconSize: [28,28], iconAnchor: [14,14], popupAnchor: [0,-18]
+      });
+    }
+
+    return L.divIcon({
+      html: '<span style="font-size:22px;line-height:1;">' + iconName + '</span>',
+      className: '', iconSize: [26,26], iconAnchor: [13,13], popupAnchor: [0,-18]
+    });
+  }
+
+  /* An <img> of a shape, for legend bars and anywhere else outside a
+     Leaflet map. Returns '' for names that have no stored shape. */
+  function iconImg(iconName, color, size) {
+    var def = SHAPES[String(iconName || '')];
+    if (!def || typeof def.svg !== 'function') return '';
+    var px = size || 18;
+    return '<img src="data:image/svg+xml;base64,' + btoa(def.svg(color))
+         + '" width="' + px + '" height="' + px
+         + '" alt="" style="vertical-align:middle;display:inline-block;" />';
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     6. Shared overlays. Two singletons: two lightboxes would stack.
+     ═══════════════════════════════════════════════════════════════ */
+  function ensureLightbox() {
+    if (document.getElementById('map-lightbox')) return;
+
+    var overlay = document.createElement('div');
+    overlay.id = 'map-lightbox';
+    overlay.className = 'map-lightbox';
+    overlay.innerHTML = '<button class="map-lightbox-arrow map-lightbox-prev" aria-label="Previous image">&#8249;</button>'
+      + '<img src="" alt="" />'
+      + '<button class="map-lightbox-arrow map-lightbox-next" aria-label="Next image">&#8250;</button>'
+      + '<div class="map-lightbox-counter"></div>'
+      + '<div class="map-lightbox-caption"></div>';
+    document.body.appendChild(overlay);
+
+    var img     = overlay.querySelector('img');
+    var caption = overlay.querySelector('.map-lightbox-caption');
+    var counter = overlay.querySelector('.map-lightbox-counter');
+    var prevBtn = overlay.querySelector('.map-lightbox-prev');
+    var nextBtn = overlay.querySelector('.map-lightbox-next');
+    var gallery = [];
+    var currentIdx = 0;
+
+    function show(idx) {
+      if (idx < 0 || idx >= gallery.length) return;
+      currentIdx = idx;
+      img.src = gallery[idx].url;
+      caption.textContent = gallery[idx].name || '';
+      var hasMultiple = gallery.length > 1;
+      counter.textContent = hasMultiple ? (idx + 1) + ' / ' + gallery.length : '';
+      prevBtn.style.display = hasMultiple && idx > 0 ? '' : 'none';
+      nextBtn.style.display = hasMultiple && idx < gallery.length - 1 ? '' : 'none';
+    }
+
+    function close() { overlay.classList.remove('active'); }
+
+    /* Close on backdrop click only — not on the image or the arrows */
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+    prevBtn.addEventListener('click', function (e) { e.stopPropagation(); show(currentIdx - 1); });
+    nextBtn.addEventListener('click', function (e) { e.stopPropagation(); show(currentIdx + 1); });
+    img.addEventListener('click',     function (e) { e.stopPropagation(); });
+
+    document.addEventListener('keydown', function (e) {
+      if (!overlay.classList.contains('active')) return;
+      if (e.key === 'Escape')          close();
+      else if (e.key === 'ArrowLeft')  show(currentIdx - 1);
+      else if (e.key === 'ArrowRight') show(currentIdx + 1);
+    });
+
+    var touchStartX = 0, touchStartY = 0;
+    overlay.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+    overlay.addEventListener('touchend', function (e) {
+      var dx = e.changedTouches[0].screenX - touchStartX;
+      var dy = e.changedTouches[0].screenY - touchStartY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+        if (dx < 0) show(currentIdx + 1);
+        else        show(currentIdx - 1);
+      }
+    }, { passive: true });
+
+    window.__mapLightbox = {
+      open: function (images, startIdx) {
+        gallery = images || [];
+        show(startIdx || 0);
+        overlay.classList.add('active');
+      }
+    };
+  }
+
+  function ensureVideoPlayer() {
+    if (document.getElementById('map-video-overlay')) return;
+
+    var overlay = document.createElement('div');
+    overlay.id = 'map-video-overlay';
+    overlay.className = 'map-video-overlay';
+    overlay.innerHTML = '<div class="map-video-wrap">'
+      + '<video controls muted playsinline preload="metadata"></video>'
+      + '<div class="map-video-spinner"></div>'
+      + '<button class="map-video-replay" aria-label="Play again">'
+      + '<svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>'
+      + '</button>'
+      + '</div>'
+      + '<div class="map-video-caption"></div>';
+    document.body.appendChild(overlay);
+
+    var wrap    = overlay.querySelector('.map-video-wrap');
+    var video   = overlay.querySelector('video');
+    var spinner = overlay.querySelector('.map-video-spinner');
+    var replay  = overlay.querySelector('.map-video-replay');
+    var caption = overlay.querySelector('.map-video-caption');
+    var activeHls = null;
+
+    function destroyHls() {
+      if (activeHls) { activeHls.destroy(); activeHls = null; }
+    }
+
+    function closeVideo() {
+      overlay.classList.remove('active');
+      video.pause();
+      destroyHls();
+      video.removeAttribute('src');
+      video.load();
+      spinner.classList.remove('hidden');
+      replay.style.display = 'none';
+    }
+
+    video.addEventListener('loadeddata', function () { spinner.classList.add('hidden'); });
+    video.addEventListener('ended',      function () { replay.style.display = 'flex'; });
+    video.addEventListener('play',       function () { replay.style.display = 'none'; });
+
+    replay.addEventListener('click', function (e) {
+      e.stopPropagation();
+      video.currentTime = 0;
+      video.play();
+    });
+
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) closeVideo(); });
+    wrap.addEventListener('click',    function (e) { e.stopPropagation(); });
+
+    document.addEventListener('keydown', function (e) {
+      if (!overlay.classList.contains('active')) return;
+      if (e.key === 'Escape') closeVideo();
+    });
+
+    function tryAutoplay() {
+      var p = video.play();
+      if (p !== undefined) p.catch(function () { /* autoplay blocked — user can tap play */ });
+    }
+
+    function attachHls(url) {
+      destroyHls();
+      activeHls = new window.Hls();
+      activeHls.loadSource(url);
+      activeHls.attachMedia(video);
+      activeHls.on(window.Hls.Events.MANIFEST_PARSED, tryAutoplay);
+    }
+
+    function playNative(url) {
+      video.src = url;
+      video.load();
+      tryAutoplay();
+    }
+
+    window.__mapVideoPlayer = {
+      open: function (url, name) {
+        spinner.classList.remove('hidden');
+        replay.style.display = 'none';
+        caption.textContent = name || '';
+        overlay.classList.add('active');
+
+        if (!HLS_EXT.test(url)) { playNative(url); return; }
+
+        /* Safari plays HLS natively; everything else needs hls.js */
+        if (video.canPlayType('application/vnd.apple.mpegurl')) { playNative(url); return; }
+
+        loadOnce('hls', {
+          js:   CDN.hlsJS,
+          test: function () { return typeof window.Hls !== 'undefined'; },
+          cb:   function () {
+            if (typeof window.Hls !== 'undefined' && window.Hls.isSupported()) attachHls(url);
+            else playNative(url);   /* last resort; fails gracefully */
+          }
+        });
+      }
+    };
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     7. ONE delegated media click listener for the whole page.
+
+     .map-lightbox-trigger / .map-video-trigger are shared, unprefixed
+     classes: they belong to the shared overlays, not to any plugin. A
+     consumer needs NO click JavaScript — only the right classes.
+
+     Galleries: a trigger carrying data-gallery opens exactly that set.
+     Otherwise the core looks for the nearest [data-geo-scope] ancestor
+     and uses the gallery that map registered, so "click one photo pin,
+     then arrow through every photo pin on this map" keeps working.
+     ═══════════════════════════════════════════════════════════════ */
+  function registerGallery(container, images) {
+    if (!container) return;
+    container.setAttribute('data-geo-scope', '');
+    container.__geoGallery = images || [];
+  }
+
+  function galleryFor(trigger, href, label) {
+    var raw = trigger.getAttribute('data-gallery');
+    if (raw) {
+      try { return { images: JSON.parse(raw), index: 0 }; }
+      catch (e) { /* malformed attribute — fall through to the scope */ }
+    }
+    var scope = trigger.closest ? trigger.closest('[data-geo-scope]') : null;
+    var pool  = scope && scope.__geoGallery;
+    if (pool && pool.length) {
+      for (var i = 0; i < pool.length; i++) {
+        if (pool[i].url === href) return { images: pool, index: i };
+      }
+    }
+    return { images: [{ url: href, name: label }], index: 0 };
+  }
+
+  function onMediaClick(e) {
+    var t = e.target;
+    if (!t || !t.closest) return;   /* e.target can be a text node */
+
+    var imgLink = t.closest('.map-lightbox-trigger');
+    if (imgLink) {
+      e.preventDefault();
+      ensureLightbox();
+      var g = galleryFor(imgLink, imgLink.getAttribute('href'), (imgLink.textContent || '').trim());
+      window.__mapLightbox.open(g.images, g.index);
+      return;
+    }
+
+    var vidLink = t.closest('.map-video-trigger');
+    if (vidLink) {
+      e.preventDefault();
+      ensureVideoPlayer();
+      window.__mapVideoPlayer.open(
+        vidLink.getAttribute('href'),
+        vidLink.getAttribute('data-name') || (vidLink.textContent || '').trim()
+      );
+    }
+  }
+
+  /* Bound once per page even if a second core version loads later: the
+     listener looks up whichever core is current at click time. */
+  if (!window.__geoClickBound) {
+    window.__geoClickBound = true;
+    document.addEventListener('click', function (e) {
+      var core = window.__geoCore;
+      if (core && typeof core.onMediaClick === 'function') core.onMediaClick(e);
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     8. Publish, then run anything that queued before the core existed.
+     Shortcodes always start through __geoQueue, so they keep working if
+     this file is ever delivered as an async external script.
+     ═══════════════════════════════════════════════════════════════ */
+  window.__geoCore = {
+    version:    VERSION,
+    shapes:     SHAPES,
+    basemaps:   BASEMAPS,
+    createIcon: createIcon,
+    iconImg:    iconImg,
+
+    loadOnce:          loadOnce,
+    ensureLeaflet:     ensureLeaflet,
+    ensureCluster:     ensureCluster,
+    loadFontAwesome:   loadFontAwesome,
+
+    ensureLightbox:    ensureLightbox,
+    ensureVideoPlayer: ensureVideoPlayer,
+    registerGallery:   registerGallery,
+    onMediaClick:      onMediaClick,
+
+    isImageUrl: isImageUrl,
+    isVideoUrl: isVideoUrl,
+    isAudioUrl: isAudioUrl
+  };
+
+  (function () {
+    var queued = window.__geoQueue;
+    window.__geoQueue = {
+      push: function (fn) {
+        try { fn(); }
+        catch (e) { console.error('geo-core: queued initialiser failed:', e); }
+      }
+    };
+    if (queued && typeof queued.length === 'number') {
+      for (var i = 0; i < queued.length; i++) {
+        try { queued[i](); }
+        catch (e) { console.error('geo-core: queued initialiser failed:', e); }
+      }
+    }
+  })();
+})();
+</script>

@@ -1,0 +1,5 @@
+title: "Eurotrip"
+line-style: "great-circle"
+line-color: "#0EA5E9"
+basemap: "voyager"
+icon: "pin-small"

@@ -1,109 +1,92 @@
-<style>
-  /* Fix Leaflet markers — override theme styles (mnml, etc.)
-     that apply max-width, border-radius, or margins to img tags
-     inside article elements, which shifts pins and tiles. */
-  article .leaflet-container img,
-  .leaflet-container img {
-    max-width: none !important;
-    width: auto !important;
-    border-radius: 0 !important;
-    display: block !important;
-  }
-  article .leaflet-marker-icon,
-  article .leaflet-marker-shadow,
-  .leaflet-marker-icon,
-  .leaflet-marker-shadow {
-    max-width: none !important;
-  }
-  article .leaflet-tile,
-  .leaflet-tile {
-    margin: 0 !important;
-    max-width: none !important;
-  }
-  /* Popup note text */
-  .map-popup-note { color: #444; }
+{{/*
+  map-styles.html — CSS owned by the Maps plugin alone.
 
-  /* Dark mode */
-  @media (prefers-color-scheme: dark) {
-    .map-popup-note { color: #bbb; }
-    .leaflet-container {
-      background: #1a1a2e !important;
-    }
-    .leaflet-popup-content-wrapper {
-      background: #2a2a3e !important;
-      color: #e0e0e0 !important;
-    }
-    .leaflet-popup-tip {
-      background: #2a2a3e !important;
-    }
-    .leaflet-popup-close-button {
-      color: #aaa !important;
-    }
-    .leaflet-popup-close-button:hover {
-      color: #fff !important;
-    }
-    .leaflet-popup-content h3 {
-      color: #e0e0e0 !important;
-    }
-    .leaflet-popup-content a {
-      color: #6cb4ee !important;
-    }
-    .leaflet-popup-content p {
-      color: #b0b0b0 !important;
-    }
-    [id^="legend-"] {
-      background: #2a2a3e !important;
-      color: #ccc !important;
-    }
-    [id^="legend-"] a {
-      color: #6cb4ee !important;
-    }
-    .leaflet-control-zoom a {
-      background: #2a2a3e !important;
-      color: #ccc !important;
-      border-color: #444 !important;
-    }
-    .leaflet-control-zoom a:hover {
-      background: #3a3a4e !important;
-    }
-    .leaflet-control-attribution {
-      background: rgba(42,42,62,0.8) !important;
-      color: #888 !important;
-    }
-    .leaflet-control-attribution a {
-      color: #6cb4ee !important;
-    }
-    [id^="map-"] > noscript div {
-      background: #2a2a3e !important;
-      color: #999 !important;
-    }
+  Everything shared lives elsewhere:
+    Leaflet theme overrides, dark-mode Leaflet chrome,
+    .mb-sr-only, .mb-noscript   -> geo-core-v1.html
+    lightbox / video / audio    -> geo-media-styles-v1.html
+
+  Every class here carries the mb-map- prefix, so nothing in this file
+  can reach into Tracks or Travelpath. There is no !important in this
+  file. If a rule loses to a theme stylesheet, raise specificity
+  (article .mb-map-...) instead.
+*/}}
+
+<style>
+  /* Map container. Height arrives as the --mb-map-h custom property
+     from the shortcode. */
+  .mb-map,
+  article .mb-map {
+    position: relative;
+    z-index: 0;
+    width: 100%;
+    height: var(--mb-map-h, 500px);
+    border-radius: 12px;
+    margin: 30px 0;
   }
-  /* Visually hidden — visible in RSS readers that strip CSS */
-  .map-sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0,0,0,0);
+  .mb-map--with-legend,
+  article .mb-map--with-legend {
+    border-radius: 12px 12px 0 0;
+    margin: 30px 0 0;
+  }
+
+  /* Legend bar */
+  .mb-map-legend {
+    background: #f0f0f0;
+    border-radius: 0 0 12px 12px;
+    padding: 6px 16px;
+    margin: 0 0 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    row-gap: 4px;
+    align-items: center;
+    font-family: sans-serif;
+    font-size: 14px;
+    color: #444;
+  }
+  .mb-map-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     white-space: nowrap;
   }
+  .mb-map-legend-sep {
+    color: #ccc;
+    font-size: 8px;
+    flex-shrink: 0;
+  }
+  .mb-map-legend a {
+    color: #444;
+    text-decoration: underline;
+  }
+
+  /* Popup note text */
+  .mb-map-popup-note { color: #444; }
+
   /* Cluster bubbles */
-  .map-cluster {
+  .mb-map-cluster {
     background: rgba(70, 130, 180, 0.7);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .map-cluster span {
+  .mb-map-cluster span {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
     color: #fff;
     font-size: 13px;
   }
+
   @media (prefers-color-scheme: dark) {
-    .map-cluster {
-      background: rgba(108, 180, 238, 0.7);
+    .mb-map-popup-note { color: #bbb; }
+    .mb-map-legend {
+      background: #2a2a3e;
+      color: #ccc;
     }
+    .mb-map-legend a { color: #6cb4ee; }
+    .mb-map-legend-sep { color: #444; }
+    .mb-map-cluster { background: rgba(108, 180, 238, 0.7); }
   }
 </style>
